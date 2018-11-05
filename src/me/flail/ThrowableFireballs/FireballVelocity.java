@@ -11,6 +11,7 @@ public class FireballVelocity implements Listener {
 
 	private ThrowableFireballs plugin = ThrowableFireballs.getPlugin(ThrowableFireballs.class);
 
+	// this isn't working...
 	public void onFireballToss(Projectile event) {
 
 		ProjectileSource shooter = event.getShooter();
