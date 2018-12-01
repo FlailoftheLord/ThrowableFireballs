@@ -1,6 +1,6 @@
 /*
  *  Copyright (C) 2018 FlailoftheLord
- *  
+ *
  *  This program is free software: you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
  *   the Free Software Foundation, either version 3 of the License, or
@@ -13,7 +13,7 @@
  *
  *   You should have received a copy of the GNU General Public License
  *   along with this program.  If not, see <https://www.gnu.org/licenses/>.
- *  
+ *
  */
 
 package me.flail.ThrowableFireballs;
@@ -31,6 +31,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.util.Vector;
 
 public class FireballThrow implements Listener {
@@ -41,12 +42,12 @@ public class FireballThrow implements Listener {
 
 	private Tools tools = new Tools();
 
-	private HashMap<String, Long> cooldown = new HashMap<String, Long>();
+	private HashMap<String, Long> cooldown = new HashMap<>();
 
 	@EventHandler
-	public void onPlayerLaunch(PlayerInteractEvent event) {
+	public void playerThrow(PlayerInteractEvent event) {
 
-		plugin = ThrowableFireballs.getPlugin(ThrowableFireballs.class);
+		plugin = JavaPlugin.getPlugin(ThrowableFireballs.class);
 
 		config = plugin.getConfig();
 

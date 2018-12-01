@@ -1,6 +1,6 @@
 name: ThrowableFireballs
 main: me.flail.ThrowableFireballs.ThrowableFireballs
-version: 1.6.6
+version: 1.6.7
 author: FlailoftheLord
 description: Throw Fireballs, like a Ghast!
 api-version: 1.13
@@ -9,11 +9,7 @@ commands:
     throwablefireballs:
       description: Main Plugin Command
       usage: /throwablefireballs [reload]
-      aliases: [fireballs]
-    fireball:
-      description: Launches a fireball
-      usage: /fireball [player]
-      aliases: [fireb, fball]
+      aliases: [fireballs, fireball, fball]
     icanhasfireball:
       description: lol
       usage: /icanhasfireball
