@@ -1,6 +1,6 @@
 /*
  *  Copyright (C) 2018 FlailoftheLord
- *  
+ *
  *  This program is free software: you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
  *   the Free Software Foundation, either version 3 of the License, or
@@ -13,11 +13,12 @@
  *
  *   You should have received a copy of the GNU General Public License
  *   along with this program.  If not, see <https://www.gnu.org/licenses/>.
- *  
+ *
  */
 
 package me.flail.ThrowableFireballs;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
 
@@ -30,14 +31,19 @@ public class Tools {
 
 		String prefix = config.getString("Prefix");
 
+		String version = plugin.getDescription().getVersion();
+
 		String result = "";
 
 		try {
 
-			result = ChatColor.translateAlternateColorCodes('&', s.replace("%prefix%", prefix));
+			result = ChatColor.translateAlternateColorCodes('&',
+					s.replace("%prefix%", prefix).replaceAll("%version%", version));
 
 		} catch (NullPointerException e) {
 			e.printStackTrace();
+			Bukkit.getConsoleSender()
+					.sendMessage(ChatColor.RED + "ERROR Translating chat codes in plugin: ThrowableFireballs!!");
 		}
 		return result;
 	}

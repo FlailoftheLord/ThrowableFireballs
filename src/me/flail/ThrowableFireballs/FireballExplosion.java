@@ -1,6 +1,6 @@
 /*
  *  Copyright (C) 2018 FlailoftheLord
- *  
+ *
  *  This program is free software: you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
  *   the Free Software Foundation, either version 3 of the License, or
@@ -13,7 +13,7 @@
  *
  *   You should have received a copy of the GNU General Public License
  *   along with this program.  If not, see <https://www.gnu.org/licenses/>.
- *  
+ *
  */
 
 package me.flail.ThrowableFireballs;
@@ -26,6 +26,7 @@ import org.bukkit.entity.Fireball;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.ProjectileHitEvent;
+import org.bukkit.plugin.java.JavaPlugin;
 
 public class FireballExplosion implements Listener {
 
@@ -36,29 +37,35 @@ public class FireballExplosion implements Listener {
 	@EventHandler
 	public void fireballExplode(ProjectileHitEvent event) {
 
-		plugin = ThrowableFireballs.getPlugin(ThrowableFireballs.class);
+		plugin = JavaPlugin.getPlugin(ThrowableFireballs.class);
 
 		config = plugin.getConfig();
 
 		Entity entity = event.getEntity();
 
-		if (entity instanceof Fireball) {
+		boolean doesNaturalDamage = config.getBoolean("NaturalExplosion");
 
-			String fbName = entity.getCustomName();
+		if (doesNaturalDamage != true) {
 
-			if (fbName.equals("HolyBalls")) {
+			if (entity instanceof Fireball) {
 
-				float power = config.getLong("FireballExplosionPower");
+				String fbName = entity.getCustomName();
 
-				boolean doesFire = config.getBoolean("FireballSetFire");
+				if (fbName.equals("HolyBalls")) {
 
-				Fireball fireball = (Fireball) entity;
+					float power = config.getLong("FireballExplosionPower");
 
-				Location fbLoc = fireball.getLocation();
+					boolean doesFire = config.getBoolean("FireballSetFire");
 
-				World fbWorld = fireball.getWorld();
+					Fireball fireball = (Fireball) entity;
 
-				fbWorld.createExplosion(fbLoc, power, doesFire);
+					Location fbLoc = fireball.getLocation();
+
+					World fbWorld = fireball.getWorld();
+
+					fbWorld.createExplosion(fbLoc, power, doesFire);
+
+				}
 
 			}
 

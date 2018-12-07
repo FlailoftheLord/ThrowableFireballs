@@ -1,6 +1,6 @@
 /*
  *  Copyright (C) 2018 FlailoftheLord
- *  
+ *
  *  This program is free software: you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
  *   the Free Software Foundation, either version 3 of the License, or
@@ -13,7 +13,7 @@
  *
  *   You should have received a copy of the GNU General Public License
  *   along with this program.  If not, see <https://www.gnu.org/licenses/>.
- *  
+ *
  */
 
 package me.flail.ThrowableFireballs;
@@ -34,17 +34,23 @@ public class FireballDamage implements Listener {
 
 		FileConfiguration config = plugin.getConfig();
 
-		Entity damager = event.getDamager();
+		boolean doesNaturalDamage = config.getBoolean("NaturalExplosion");
 
-		if (damager instanceof Fireball) {
+		if (doesNaturalDamage != true) {
 
-			String fbName = damager.getCustomName();
+			Entity damager = event.getDamager();
 
-			if (fbName.equals("HolyBalls")) {
+			if (damager instanceof Fireball) {
 
-				double damage = config.getDouble("FireballDamage") * 2;
+				String fbName = damager.getCustomName();
 
-				event.setDamage(damage);
+				if (fbName.equals("HolyBalls")) {
+
+					double damage = config.getDouble("FireballDamage") * 2;
+
+					event.setDamage(damage);
+
+				}
 
 			}
 

@@ -1,7 +1,7 @@
 /*
- * 
+ *
  *  Copyright (C) 2018 FlailoftheLord
- *  
+ *
  *  This program is free software: you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
  *   the Free Software Foundation, either version 3 of the License, or
@@ -14,16 +14,16 @@
  *
  *   You should have received a copy of the GNU General Public License
  *   along with this program.  If not, see <https://www.gnu.org/licenses/>.
- *  
+ *
  */
 
 package me.flail.ThrowableFireballs;
 
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -31,7 +31,6 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Fireball;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.util.Vector;
 
 public class Commands implements CommandExecutor {
 
@@ -42,11 +41,9 @@ public class Commands implements CommandExecutor {
 	@Override
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 
-		String cmd = command.getName().toLowerCase();
+		String cmd = command.getName().toLowerCase(Locale.ENGLISH);
 
 		FileConfiguration config = plugin.getConfig();
-
-		String version = plugin.getDescription().getVersion();
 
 		String reloadMessage = config.getString("ReloadMessage");
 
@@ -54,10 +51,15 @@ public class Commands implements CommandExecutor {
 
 		Player player = (Player) sender;
 
-		if (cmd.equals("fireball")) {
+		if (cmd.equals("throwablefireballs")) {
 			if (args.length == 2) {
 
-				if (args[0].equalsIgnoreCase("get")) {
+				if (args[0].equalsIgnoreCase("info") || args[0].equalsIgnoreCase("about")) {
+
+					player.sendMessage(tools.chat(
+							"%prefix% &6&lThrowableFireballs &7running version &e%version%  &2by FlailoftheLord."));
+
+				} else if (args[0].equalsIgnoreCase("get")) {
 
 					if (player.hasPermission("fireballs.op")) {
 
@@ -74,7 +76,7 @@ public class Commands implements CommandExecutor {
 
 								ItemStack fireball = new FireballItem().fireball();
 
-								Map<Integer, ItemStack> fireballsGiven = new HashMap<Integer, ItemStack>();
+								Map<Integer, ItemStack> fireballsGiven = new HashMap<>();
 
 								fireballsGiven.put(amount, fireball);
 
@@ -90,6 +92,7 @@ public class Commands implements CommandExecutor {
 							player.sendMessage(tools.chat("%prefix% &cProper usage: &7/%cmd% get [number(1-64)]")
 									.replace("%cmd%", cmd));
 						}
+
 					}
 
 				}
@@ -99,8 +102,15 @@ public class Commands implements CommandExecutor {
 				if (player.hasPermission("fireballs.op")) {
 
 					if (args[0].equalsIgnoreCase("reload")) {
-						plugin.reloadConfig();
-						sender.sendMessage(tools.chat(reloadMessage));
+
+						if (player.hasPermission("fireballs.op")) {
+
+							plugin.reloadConfig();
+
+							sender.sendMessage(tools.chat(reloadMessage));
+						} else {
+							player.sendMessage(tools.chat(noPermission));
+						}
 
 					} else if (args[0].equalsIgnoreCase("get")) {
 
@@ -116,9 +126,13 @@ public class Commands implements CommandExecutor {
 
 						for (Player p : Bukkit.getOnlinePlayers()) {
 
+							if (p == null) {
+								continue;
+							}
+
 							if (args[0].equalsIgnoreCase(p.getName()) || p.getName().startsWith(args[0])) {
 
-								doThrow(p.launchProjectile(Fireball.class));
+								new FireballThrow().doThrow(p.launchProjectile(Fireball.class));
 
 								break;
 							}
@@ -132,34 +146,12 @@ public class Commands implements CommandExecutor {
 			} else if (args.length == 0) {
 				if (player.hasPermission("fireballs.op")) {
 
-					doThrow(player.launchProjectile(Fireball.class));
+					new FireballThrow().doThrow(player.launchProjectile(Fireball.class));
 					return true;
 
 				} else {
 					player.sendMessage(tools.chat(noPermission));
 				}
-			}
-
-		} else if (cmd.equals("throwablefireballs")) {
-			if (args.length == 1) {
-				if (args[0].equalsIgnoreCase("reload")) {
-
-					if (player.hasPermission("fireballs.op")) {
-
-						plugin.reloadConfig();
-
-						sender.sendMessage(tools.chat(reloadMessage));
-					} else {
-						player.sendMessage(tools.chat(noPermission));
-					}
-
-				} else {
-					sender.sendMessage(ChatColor.GOLD + "ThrowableFireballs " + ChatColor.GRAY + "v" + version
-							+ ChatColor.GOLD + " by FlailoftheLord ");
-				}
-			} else {
-				sender.sendMessage(ChatColor.GOLD + "ThrowableFireballs " + ChatColor.GRAY + "v" + version
-						+ ChatColor.GOLD + " by FlailoftheLord ");
 			}
 
 		} else if (cmd.equals("icanhasfireball")) {
@@ -173,23 +165,6 @@ public class Commands implements CommandExecutor {
 		}
 
 		return true;
-	}
-
-	private void doThrow(Fireball ball) {
-
-		FileConfiguration config = plugin.getConfig();
-
-		double speed = config.getDouble("FireballSpeed");
-
-		if (ball.getType().toString().equals("FIREBALL")) {
-			Vector bVel = ball.getVelocity().multiply(speed);
-			ball.setIsIncendiary(false);
-			ball.setVelocity(bVel);
-			ball.setYield(1);
-			ball.setCustomName("HolyBalls");
-			ball.setCustomNameVisible(false);
-		}
-
 	}
 
 }

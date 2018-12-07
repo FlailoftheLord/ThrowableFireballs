@@ -203,20 +203,20 @@ public class FireballThrow implements Listener {
 
 				}
 
-			} else {
-				return;
 			}
 
 		}
 
 	}
 
-	private void doThrow(Fireball ball) {
+	public void doThrow(Fireball ball) {
 
 		double fireballVelocity = plugin.getConfig().getDouble("FireballSpeed");
 
+		boolean doesNaturalDamage = config.getBoolean("NaturalExplosion");
+
 		if (ball.getType() == EntityType.FIREBALL) {
-			ball.setIsIncendiary(false);
+			ball.setIsIncendiary(doesNaturalDamage);
 			ball.setYield(1);
 			ball.setCustomName("HolyBalls");
 			ball.setCustomNameVisible(false);
