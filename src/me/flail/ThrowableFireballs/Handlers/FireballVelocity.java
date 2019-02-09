@@ -77,9 +77,7 @@ public class FireballVelocity implements Listener {
 
 			if (ball.getCustomName() != null) {
 				String name = ball.getCustomName();
-				switch (name) {
-
-				case "HolyBalls":
+				if (name.equals("HolyBalls")) {
 
 					for (Entity e : ball.getNearbyEntities(1, 1, 1)) {
 						if (e instanceof Player) {
@@ -102,7 +100,6 @@ public class FireballVelocity implements Listener {
 
 					}
 
-					break;
 				}
 
 			}

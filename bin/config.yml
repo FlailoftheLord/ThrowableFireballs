@@ -25,13 +25,13 @@ NaturalExplosion: true
 FireballExplosionPower: 3
 
 ImmuneBlocks:
-- Cobblestone
-- Mossy_Cobblestone
-- stone_bricks
-- mossy_stone_bricks
-- cracked_stone_bricks
-- chiseled_stone_bricks
-- END_STONE
+- "Chest"
+- "trapped_chest"
+- "ender_chest"
+
+# This means that any block containing the word 'stone' in its' name will not be blown up.
+ImmuneBlockKeywords:
+- "stone"
 
 # BETA Option! This May NOT WORK DEPENDING ON YOUR SPIGOT BUILD!
 FireballSpeed: 2.0

@@ -26,7 +26,6 @@ import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.util.Vector;
 
@@ -61,22 +60,16 @@ public class Tools {
 	 * Knocks all entities within the target radius backwards as naturally as
 	 * possible.
 	 *
-	 * @param target the target location where the fireball hit.
+	 * @param center the target entity at the center of the fireball hit.
 	 * @return false if there are no entities nearby, true otherwise.
 	 */
-	public boolean setKnockback(Location target) {
+	public boolean setKnockback(Entity center) {
+
+		Location target = center.getLocation();
 
 		int maxHeight = plugin.getConfig().getInt("MaxJumpHeight");
 
-		Entity testSubject = target.getWorld().spawnEntity(target, EntityType.SILVERFISH);
-
-		List<Entity> nearbyEntities = testSubject.getNearbyEntities(maxHeight, maxHeight, maxHeight);
-
-		if (testSubject.isValid()) {
-			LivingEntity e = (LivingEntity) testSubject;
-			e.setAI(false);
-			e.damage(69);
-		}
+		List<Entity> nearbyEntities = center.getNearbyEntities(maxHeight, maxHeight, maxHeight);
 
 		if ((nearbyEntities == null) || nearbyEntities.isEmpty()) {
 			return false;
@@ -85,7 +78,7 @@ public class Tools {
 		List<LivingEntity> validEntities = new ArrayList<>();
 
 		for (Entity entity : nearbyEntities) {
-			if (entity.isValid()) {
+			if (entity.isValid() && (entity instanceof LivingEntity)) {
 				validEntities.add((LivingEntity) entity);
 			}
 		}

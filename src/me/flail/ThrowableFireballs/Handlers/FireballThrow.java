@@ -66,11 +66,10 @@ public class FireballThrow implements Listener {
 				ItemStack fb = player.getInventory().getItemInMainHand();
 				ItemStack fbo = player.getInventory().getItemInOffHand();
 				boolean fboEnabled = config.getBoolean("AllowOffhandThrowing");
-				ItemStack i = event.getItem();
-				int iA;
-				if (i != null) {
-					iA = i.getAmount();
-					fbItem.setAmount(iA);
+				ItemStack item = event.getItem();
+				int amount = item.getAmount();
+				if (item != null) {
+					fbItem.setAmount(amount);
 				}
 
 				if (fb.equals(fbItem) || (fbo.equals(fbItem) && fboEnabled)) {
@@ -115,8 +114,6 @@ public class FireballThrow implements Listener {
 
 						int consume;
 
-						int amount;
-
 						if (p.hasPermission("fireballs.throw")) {
 
 							Material offHandItem = player.getInventory().getItemInOffHand().getType();
@@ -127,15 +124,14 @@ public class FireballThrow implements Listener {
 								consume = 0;
 							}
 
-							amount = i.getAmount();
 							if (amount < consume) {
 								return;
 							}
 
 							if (amount == consume) {
-								p.getInventory().removeItem(new ItemStack[] { i });
+								p.getInventory().removeItem(new ItemStack(item));
 							} else {
-								i.setAmount(amount - consume);
+								item.setAmount(amount - consume);
 							}
 
 							if (cooldown.containsKey(p.getName())) {
@@ -157,6 +153,7 @@ public class FireballThrow implements Listener {
 									}
 									return;
 								}
+
 							}
 
 							cooldown.put(player.getName(), System.currentTimeMillis());

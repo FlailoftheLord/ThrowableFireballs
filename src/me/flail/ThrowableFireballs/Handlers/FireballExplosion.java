@@ -25,6 +25,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.Fireball;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.BlockExplodeEvent;
 import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -33,9 +34,9 @@ import me.flail.ThrowableFireballs.Tools;
 
 public class FireballExplosion implements Listener {
 
-	private ThrowableFireballs plugin;
+	private ThrowableFireballs plugin = JavaPlugin.getPlugin(ThrowableFireballs.class);
 
-	private FileConfiguration config;
+	private FileConfiguration config = plugin.getConfig();
 
 	@EventHandler
 	public void fireballExplode(ProjectileHitEvent event) {
@@ -69,13 +70,18 @@ public class FireballExplosion implements Listener {
 
 					fbWorld.createExplosion(fbLoc, power, doesFire);
 
-					new Tools().setKnockback(fbLoc);
+					new Tools().setKnockback(fireball);
 
 				}
 
 			}
 
 		}
+
+	}
+
+	@EventHandler
+	public void blockBoom(BlockExplodeEvent event) {
 
 	}
 
