@@ -15,9 +15,6 @@
 #==================================================================#
 #-----------------------------------------------------------------
 
-#DO NOT CHANGE THIS UNLESS YOU KNOW WHAT YOU ARE DOING
-FireballName: FIREBALL
-
 # Wether the fireball does a natural, Ghast-Initiated explosion.
 # if set to true the below values will be ignored.
 # if set to false, the plugin will use the below explosion settings 
@@ -25,7 +22,16 @@ FireballName: FIREBALL
 NaturalExplosion: true
 
 # Set the Explosion Power of the Fireball on impact, set it to 0 to disable
-FireballExplosionPower: 2
+FireballExplosionPower: 3
+
+ImmuneBlocks:
+- Cobblestone
+- Mossy_Cobblestone
+- stone_bricks
+- mossy_stone_bricks
+- cracked_stone_bricks
+- chiseled_stone_bricks
+- END_STONE
 
 # BETA Option! This May NOT WORK DEPENDING ON YOUR SPIGOT BUILD!
 FireballSpeed: 2.0
@@ -39,6 +45,9 @@ FireballSetFire: true
 
 # Whether you can throw a fireball from your offhand
 AllowOffhandThrowing: true
+
+# Set the maximum number of blocks in height you can jump with a fireball
+MaxJumpHeight: 8
 
 # List of worlds where throwing fireballs is NOT allowed
 NoThrowZones:

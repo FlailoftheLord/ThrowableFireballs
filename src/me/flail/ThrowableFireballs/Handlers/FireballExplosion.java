@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2018 FlailoftheLord
+ *  Copyright (C) 2018-2019 FlailoftheLord
  *
  *  This program is free software: you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
@@ -16,7 +16,7 @@
  *
  */
 
-package me.flail.ThrowableFireballs;
+package me.flail.ThrowableFireballs.Handlers;
 
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -27,6 +27,9 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.plugin.java.JavaPlugin;
+
+import me.flail.ThrowableFireballs.ThrowableFireballs;
+import me.flail.ThrowableFireballs.Tools;
 
 public class FireballExplosion implements Listener {
 
@@ -53,17 +56,20 @@ public class FireballExplosion implements Listener {
 
 				if (fbName.equals("HolyBalls")) {
 
-					float power = config.getLong("FireballExplosionPower");
+					FileConfiguration config = plugin.getConfig();
 
+					float power = config.getLong("FireballExplosionPower");
 					boolean doesFire = config.getBoolean("FireballSetFire");
 
 					Fireball fireball = (Fireball) entity;
 
-					Location fbLoc = fireball.getLocation();
+					Location fbLoc = event.getHitBlock().getLocation();
 
 					World fbWorld = fireball.getWorld();
 
 					fbWorld.createExplosion(fbLoc, power, doesFire);
+
+					new Tools().setKnockback(fbLoc);
 
 				}
 

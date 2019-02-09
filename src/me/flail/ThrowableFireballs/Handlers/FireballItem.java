@@ -1,6 +1,6 @@
 /*
- *  Copyright (C) 2018 FlailoftheLord
- *  
+ *  Copyright (C) 2018-2019 FlailoftheLord
+ *
  *  This program is free software: you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
  *   the Free Software Foundation, either version 3 of the License, or
@@ -13,10 +13,10 @@
  *
  *   You should have received a copy of the GNU General Public License
  *   along with this program.  If not, see <https://www.gnu.org/licenses/>.
- *  
+ *
  */
 
-package me.flail.ThrowableFireballs;
+package me.flail.ThrowableFireballs.Handlers;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,6 +26,9 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+
+import me.flail.ThrowableFireballs.ThrowableFireballs;
+import me.flail.ThrowableFireballs.Tools;
 
 public class FireballItem {
 
@@ -41,7 +44,7 @@ public class FireballItem {
 
 		List<String> fbLoreList = config.getStringList("Lore");
 
-		ArrayList<String> fbLore = new ArrayList<String>();
+		ArrayList<String> fbLore = new ArrayList<>();
 
 		for (String l : fbLoreList) {
 			fbLore.add(tools.chat(l));

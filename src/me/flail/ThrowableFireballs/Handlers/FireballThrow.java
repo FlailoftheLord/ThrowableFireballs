@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2018 FlailoftheLord
+ *  Copyright (C) 2018-2019 FlailoftheLord
  *
  *  This program is free software: you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
@@ -16,7 +16,7 @@
  *
  */
 
-package me.flail.ThrowableFireballs;
+package me.flail.ThrowableFireballs.Handlers;
 
 import java.util.HashMap;
 import java.util.List;
@@ -34,9 +34,12 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.util.Vector;
 
+import me.flail.ThrowableFireballs.ThrowableFireballs;
+import me.flail.ThrowableFireballs.Tools;
+
 public class FireballThrow implements Listener {
 
-	private ThrowableFireballs plugin;
+	private ThrowableFireballs plugin = JavaPlugin.getPlugin(ThrowableFireballs.class);
 
 	private FileConfiguration config;
 
@@ -47,8 +50,6 @@ public class FireballThrow implements Listener {
 	@EventHandler
 	public void playerThrow(PlayerInteractEvent event) {
 
-		plugin = JavaPlugin.getPlugin(ThrowableFireballs.class);
-
 		config = plugin.getConfig();
 
 		Player player = event.getPlayer();
@@ -56,7 +57,7 @@ public class FireballThrow implements Listener {
 
 		if ((a == Action.RIGHT_CLICK_BLOCK) || (a == Action.RIGHT_CLICK_AIR)) {
 
-			int cooldownTime = config.getInt("Cooldown");
+			double cooldownTime = config.getDouble("Cooldown");
 
 			ItemStack fbItem = new FireballItem().fireball();
 
@@ -78,6 +79,8 @@ public class FireballThrow implements Listener {
 
 					boolean isInNoThrowWorld = false;
 
+					event.setCancelled(true);
+
 					String pWorld = p.getWorld().getName().toLowerCase();
 
 					List<String> noThrowWorlds = config.getStringList("NoThrowZones");
@@ -88,10 +91,6 @@ public class FireballThrow implements Listener {
 
 							isInNoThrowWorld = true;
 							break;
-
-						} else {
-
-							isInNoThrowWorld = false;
 
 						}
 
@@ -105,13 +104,14 @@ public class FireballThrow implements Listener {
 
 					} else {
 
-						Material pb = p.getLocation().add(0, -1, 0).getBlock().getType();
-						Material pbx1 = p.getLocation().add(1, -1, 0).getBlock().getType();
-						Material pbz1 = p.getLocation().add(0, -1, 1).getBlock().getType();
-						Material pbx2 = p.getLocation().add(-1, -1, 0).getBlock().getType();
-						Material pbz2 = p.getLocation().add(0, -1, -1).getBlock().getType();
+						/*
+						 * Material pb = p.getLocation().add(0, -1, 0).getBlock().getType(); Material
+						 * pbx1 = p.getLocation().add(1, -1, 0).getBlock().getType(); Material pbz1 =
+						 * p.getLocation().add(0, -1, 1).getBlock().getType(); Material pbx2 =
+						 * p.getLocation().add(-1, -1, 0).getBlock().getType(); Material pbz2 =
+						 * p.getLocation().add(0, -1, -1).getBlock().getType();
+						 */
 						Material air = Material.AIR;
-						Material lookedAtBlock = p.getTargetBlock(null, 5).getType();
 
 						int consume;
 
@@ -140,7 +140,7 @@ public class FireballThrow implements Listener {
 
 							if (cooldown.containsKey(p.getName())) {
 
-								long timeLeft = ((cooldown.get(p.getName()) / 1000) + cooldownTime)
+								double timeLeft = ((cooldown.get(p.getName()) / 1000) + cooldownTime)
 										- (System.currentTimeMillis() / 1000);
 
 								boolean sendCooldownMessage = config.getBoolean("CooldownMessageEnabled");
@@ -161,39 +161,37 @@ public class FireballThrow implements Listener {
 
 							cooldown.put(player.getName(), System.currentTimeMillis());
 
-							if ((pb != air) || (pbx1 != air) || (pbx2 != air) || (pbz1 != air) || (pbz2 != air)) {
-								float pp = p.getLocation().getPitch();
+							this.throwBall(p.launchProjectile(Fireball.class));
 
-								if ((pp >= 70.0) && (pp <= 80.4) && (lookedAtBlock != air)) {
-									doThrow(p.launchProjectile(Fireball.class));
-									event.getPlayer()
-											.setVelocity(event.getPlayer().getLocation().getDirection().multiply(3.8));
-									event.getPlayer().setVelocity(new Vector(event.getPlayer().getVelocity().getX(),
-											1.5D, event.getPlayer().getVelocity().getZ()));
-								} else if ((pp >= 30.0) && (pp < 70.0) && (lookedAtBlock != air)) {
-									doThrow(p.launchProjectile(Fireball.class));
-									event.getPlayer()
-											.setVelocity(event.getPlayer().getLocation().getDirection().multiply(-0.6));
-									event.getPlayer().setVelocity(new Vector(event.getPlayer().getVelocity().getX(),
-											1.5D, event.getPlayer().getVelocity().getZ()));
-								} else if ((pp >= 80.5) && (lookedAtBlock != air)) {
-									doThrow(p.launchProjectile(Fireball.class));
-									event.getPlayer()
-											.setVelocity(event.getPlayer().getLocation().getDirection().multiply(3.8));
-									event.getPlayer().setVelocity(new Vector(event.getPlayer().getVelocity().getX(),
-											2.5, event.getPlayer().getVelocity().getZ()));
-								} else if ((pp <= 29.0) && (lookedAtBlock != air)) {
-									doThrow(p.launchProjectile(Fireball.class));
-									event.getPlayer()
-											.setVelocity(event.getPlayer().getLocation().getDirection().multiply(-0.2));
-									event.getPlayer().setVelocity(new Vector(event.getPlayer().getVelocity().getX(),
-											0.2D, event.getPlayer().getVelocity().getZ()));
-								} else {
-									doThrow(p.launchProjectile(Fireball.class));
-								}
-							} else {
-								doThrow(p.launchProjectile(Fireball.class));
-							}
+							/*
+							 *
+							 * if ((pb != air) || (pbx1 != air) || (pbx2 != air) || (pbz1 != air) || (pbz2
+							 * != air)) { float pp = p.getLocation().getPitch();
+							 *
+							 * if ((pp >= 70.0) && (pp <= 80.4)) {
+							 * doThrow(p.launchProjectile(Fireball.class)); event.getPlayer()
+							 * .setVelocity(event.getPlayer().getLocation().getDirection().multiply(3.8));
+							 * event.getPlayer().setVelocity(new
+							 * Vector(event.getPlayer().getVelocity().getX(), 1.5D,
+							 * event.getPlayer().getVelocity().getZ())); } else if ((pp >= 30.0) && (pp <
+							 * 70.0)) { doThrow(p.launchProjectile(Fireball.class)); event.getPlayer()
+							 * .setVelocity(event.getPlayer().getLocation().getDirection().multiply(-0.6));
+							 * event.getPlayer().setVelocity(new
+							 * Vector(event.getPlayer().getVelocity().getX(), 1.5D,
+							 * event.getPlayer().getVelocity().getZ())); } else if ((pp >= 80.5)) {
+							 * doThrow(p.launchProjectile(Fireball.class)); event.getPlayer()
+							 * .setVelocity(event.getPlayer().getLocation().getDirection().multiply(3.8));
+							 * event.getPlayer().setVelocity(new
+							 * Vector(event.getPlayer().getVelocity().getX(), 2.5,
+							 * event.getPlayer().getVelocity().getZ())); } else if ((pp <= 29.0)) {
+							 * doThrow(p.launchProjectile(Fireball.class)); event.getPlayer()
+							 * .setVelocity(event.getPlayer().getLocation().getDirection().multiply(-0.2));
+							 * event.getPlayer().setVelocity(new
+							 * Vector(event.getPlayer().getVelocity().getX(), 0.2D,
+							 * event.getPlayer().getVelocity().getZ())); } else {
+							 * doThrow(p.launchProjectile(Fireball.class)); } } else {
+							 * doThrow(p.launchProjectile(Fireball.class)); }
+							 */
 
 						} else {
 							player.sendMessage(tools.chat(config.getString("NoPermissionMessage")));
@@ -209,24 +207,27 @@ public class FireballThrow implements Listener {
 
 	}
 
-	public void doThrow(Fireball ball) {
+	public void throwBall(Fireball ball) {
 
-		double fireballVelocity = plugin.getConfig().getDouble("FireballSpeed");
+		config = plugin.getConfig();
 
-		boolean doesNaturalDamage = config.getBoolean("NaturalExplosion");
+		double fireballVelocity = config.getDouble("FireballSpeed", 1.6);
+
+		boolean doesNaturalDamage = config.getBoolean("NaturalExplosion", false);
 
 		if (ball.getType() == EntityType.FIREBALL) {
 			ball.setIsIncendiary(doesNaturalDamage);
 			ball.setYield(1);
 			ball.setCustomName("HolyBalls");
 			ball.setCustomNameVisible(false);
+			Vector velocity = ball.getVelocity();
+
+			velocity.add(velocity);
+
+			Vector newVelocity = velocity.multiply(fireballVelocity);
+
+			ball.setVelocity(newVelocity);
 		}
-
-		Vector velocity = ball.getVelocity();
-
-		Vector newVelocity = velocity.multiply(fireballVelocity);
-
-		ball.setVelocity(newVelocity);
 
 	}
 

@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2018 FlailoftheLord
+ *  Copyright (C) 2018-2019 FlailoftheLord
  *
  *  This program is free software: you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
@@ -16,22 +16,33 @@
  *
  */
 
-package me.flail.ThrowableFireballs;
+package me.flail.ThrowableFireballs.Handlers;
 
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import org.bukkit.Material;
+import org.bukkit.block.Block;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Fireball;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.ProjectileLaunchEvent;
 import org.bukkit.projectiles.ProjectileSource;
 import org.bukkit.util.Vector;
+
+import me.flail.ThrowableFireballs.ThrowableFireballs;
 
 public class FireballVelocity implements Listener {
 
 	private ThrowableFireballs plugin = ThrowableFireballs.getPlugin(ThrowableFireballs.class);
 
-	// this isn't working...
-	@EventHandler
+	// this isn't implemented yet, still messin' around with it.
 	public void onFireballToss(Projectile event) {
 
 		ProjectileSource shooter = event.getShooter();
@@ -54,6 +65,49 @@ public class FireballVelocity implements Listener {
 
 		}
 
+	}
+
+	@EventHandler
+	public void playerThrow(ProjectileLaunchEvent event) {
+		Entity entity = event.getEntity();
+
+		if ((entity instanceof Fireball) && entity.isValid()) {
+
+			LivingEntity ball = (LivingEntity) entity;
+
+			if (ball.getCustomName() != null) {
+				String name = ball.getCustomName();
+				switch (name) {
+
+				case "HolyBalls":
+
+					for (Entity e : ball.getNearbyEntities(1, 1, 1)) {
+						if (e instanceof Player) {
+
+							Set<Material> line = new HashSet<>();
+							line.add(Material.WATER);
+
+							List<Block> lineofsight = ((Player) e).getLineOfSight(line, 1);
+
+							LivingEntity f = (LivingEntity) e.getWorld().spawnEntity(lineofsight.get(0).getLocation(),
+									EntityType.FIREBALL);
+							f.setCustomName("HolyBalls");
+							f.setCustomNameVisible(false);
+							f.setVelocity(ball.getVelocity());
+
+							event.setCancelled(true);
+
+							break;
+						}
+
+					}
+
+					break;
+				}
+
+			}
+
+		}
 	}
 
 }

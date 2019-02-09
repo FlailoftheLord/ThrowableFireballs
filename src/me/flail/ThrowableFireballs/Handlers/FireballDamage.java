@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2018 FlailoftheLord
+ *  Copyright (C) 2018-2019 FlailoftheLord
  *
  *  This program is free software: you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
@@ -16,14 +16,15 @@
  *
  */
 
-package me.flail.ThrowableFireballs;
+package me.flail.ThrowableFireballs.Handlers;
 
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.Fireball;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
+
+import me.flail.ThrowableFireballs.ThrowableFireballs;
 
 public class FireballDamage implements Listener {
 
@@ -38,11 +39,11 @@ public class FireballDamage implements Listener {
 
 		if (doesNaturalDamage != true) {
 
-			Entity damager = event.getDamager();
+			DamageCause damager = event.getCause();
 
-			if (damager instanceof Fireball) {
+			if (damager.equals(DamageCause.BLOCK_EXPLOSION) || damager.equals(DamageCause.ENTITY_EXPLOSION)) {
 
-				String fbName = damager.getCustomName();
+				String fbName = event.getDamager().getCustomName();
 
 				if (fbName.equals("HolyBalls")) {
 

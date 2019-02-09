@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2018 FlailoftheLord
+ *  Copyright (C) 2018-2019 FlailoftheLord
  *
  *  This program is free software: you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
@@ -29,6 +29,14 @@ import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.Recipe;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitScheduler;
+
+import me.flail.ThrowableFireballs.Handlers.FireballDamage;
+import me.flail.ThrowableFireballs.Handlers.FireballExplosion;
+import me.flail.ThrowableFireballs.Handlers.FireballItem;
+import me.flail.ThrowableFireballs.Handlers.FireballRecipe;
+import me.flail.ThrowableFireballs.Handlers.FireballThrow;
+import me.flail.ThrowableFireballs.Handlers.FireballVelocity;
 
 public class ThrowableFireballs extends JavaPlugin implements CommandExecutor, Listener {
 
@@ -36,7 +44,8 @@ public class ThrowableFireballs extends JavaPlugin implements CommandExecutor, L
 
 	private String version;
 
-	private Server server = getServer();
+	public Server server = getServer();
+	public BukkitScheduler scheduler = server.getScheduler();
 
 	@Override
 	public void onEnable() {

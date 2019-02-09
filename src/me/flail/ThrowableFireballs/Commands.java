@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2018 FlailoftheLord
+ *  Copyright (C) 2018-2019 FlailoftheLord
  *
  *  This program is free software: you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
@@ -31,6 +31,9 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Fireball;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+
+import me.flail.ThrowableFireballs.Handlers.FireballItem;
+import me.flail.ThrowableFireballs.Handlers.FireballThrow;
 
 public class Commands implements CommandExecutor {
 
@@ -132,7 +135,7 @@ public class Commands implements CommandExecutor {
 
 							if (args[0].equalsIgnoreCase(p.getName()) || p.getName().startsWith(args[0])) {
 
-								new FireballThrow().doThrow(p.launchProjectile(Fireball.class));
+								new FireballThrow().throwBall(p.launchProjectile(Fireball.class));
 
 								break;
 							}
@@ -146,7 +149,7 @@ public class Commands implements CommandExecutor {
 			} else if (args.length == 0) {
 				if (player.hasPermission("fireballs.op")) {
 
-					new FireballThrow().doThrow(player.launchProjectile(Fireball.class));
+					new FireballThrow().throwBall(player.launchProjectile(Fireball.class));
 					return true;
 
 				} else {

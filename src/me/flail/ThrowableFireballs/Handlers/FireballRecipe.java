@@ -1,6 +1,6 @@
 /*
- *  Copyright (C) 2018 FlailoftheLord
- *  
+ *  Copyright (C) 2018-2019 FlailoftheLord
+ *
  *  This program is free software: you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
  *   the Free Software Foundation, either version 3 of the License, or
@@ -13,10 +13,10 @@
  *
  *   You should have received a copy of the GNU General Public License
  *   along with this program.  If not, see <https://www.gnu.org/licenses/>.
- *  
+ *
  */
 
-package me.flail.ThrowableFireballs;
+package me.flail.ThrowableFireballs.Handlers;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -26,6 +26,9 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.Recipe;
 import org.bukkit.inventory.ShapedRecipe;
+
+import me.flail.ThrowableFireballs.ThrowableFireballs;
+import me.flail.ThrowableFireballs.Tools;
 
 public class FireballRecipe {
 
