@@ -55,6 +55,14 @@ public class ThrowableFireballs extends JavaPlugin implements CommandExecutor, L
 		// Save config files
 		saveDefaultConfig();
 
+		/*
+		 * ConfigUpdater updater = new ConfigUpdater();
+		 * scheduler.scheduleSyncDelayedTask(this, () -> {
+		 * 
+		 * updater.updateConfig(this.getConfig());
+		 * 
+		 * }, 30L);
+		 */
 		registerRecipes();
 
 		// Register Events and Commands
@@ -79,9 +87,9 @@ public class ThrowableFireballs extends JavaPlugin implements CommandExecutor, L
 
 	@Override
 	public void onDisable() {
-
 		Tools tools = new Tools();
 
+		scheduler.cancelTasks(this);
 		console.sendMessage(tools.chat("&6&lFarewell!"));
 	}
 

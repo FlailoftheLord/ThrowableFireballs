@@ -18,11 +18,8 @@
 
 package me.flail.ThrowableFireballs.Handlers;
 
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
-import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
@@ -82,18 +79,13 @@ public class FireballVelocity implements Listener {
 					for (Entity e : ball.getNearbyEntities(1, 1, 1)) {
 						if (e instanceof Player) {
 
-							Set<Material> line = new HashSet<>();
-							line.add(Material.WATER);
+							List<Block> lineofsight = ((Player) e).getLineOfSight(null, 1);
 
-							List<Block> lineofsight = ((Player) e).getLineOfSight(line, 1);
+							Vector vel = ball.getVelocity();
 
-							LivingEntity f = (LivingEntity) e.getWorld().spawnEntity(lineofsight.get(0).getLocation(),
-									EntityType.FIREBALL);
-							f.setCustomName("HolyBalls");
-							f.setCustomNameVisible(false);
-							f.setVelocity(ball.getVelocity());
+							ball.teleport(lineofsight.get(0).getLocation());
 
-							event.setCancelled(true);
+							ball.setVelocity(vel);
 
 							break;
 						}

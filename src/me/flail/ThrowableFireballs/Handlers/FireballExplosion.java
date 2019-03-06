@@ -20,6 +20,7 @@ package me.flail.ThrowableFireballs.Handlers;
 
 import org.bukkit.Location;
 import org.bukkit.World;
+import org.bukkit.block.Block;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Fireball;
@@ -70,7 +71,7 @@ public class FireballExplosion implements Listener {
 
 					fbWorld.createExplosion(fbLoc, power, doesFire);
 
-					new Tools().setKnockback(fireball);
+					new Tools().setKnockback(fireball, power * 1.2);
 
 				}
 
@@ -82,6 +83,10 @@ public class FireballExplosion implements Listener {
 
 	@EventHandler
 	public void blockBoom(BlockExplodeEvent event) {
+
+		for (Block block : event.blockList().toArray(new Block[] {})) {
+
+		}
 
 	}
 

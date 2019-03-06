@@ -3,8 +3,7 @@
 #                                                                  #
 #                 Plugin by FlailoftheLord.                        #
 #        -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-                   #
-#   for questions please pm me on discord at FlailoftheLord#6842   #
-#          Join my discord server for faster support:              #
+#        For questions please join my discord server:              #
 #                https://discord.gg/wuxW5PS                        #
 #   ______               __        _____                           #
 #   |       |           /  \         |        |                    #
@@ -33,7 +32,7 @@ ImmuneBlocks:
 ImmuneBlockKeywords:
 - "stone"
 
-# BETA Option! This May NOT WORK DEPENDING ON YOUR SPIGOT BUILD!
+# Probbly doesn't work...
 FireballSpeed: 2.0
 
 # Set the amount of damage the fireball does to an entity or player.
@@ -45,6 +44,9 @@ FireballSetFire: true
 
 # Whether you can throw a fireball from your offhand
 AllowOffhandThrowing: true
+
+# Should players be allowed to use regular fire charges like fireballs?
+UseFirechrage: false
 
 # Set the maximum number of blocks in height you can jump with a fireball
 MaxJumpHeight: 8

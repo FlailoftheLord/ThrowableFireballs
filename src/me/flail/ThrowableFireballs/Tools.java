@@ -27,6 +27,7 @@ import org.bukkit.Location;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
 public class Tools {
@@ -50,8 +51,8 @@ public class Tools {
 
 		} catch (Throwable e) {
 			e.printStackTrace();
-			Bukkit.getConsoleSender()
-					.sendMessage(ChatColor.RED + "ERROR Translating chat codes in plugin: ThrowableFireballs!!");
+			Bukkit.getConsoleSender().sendMessage(
+					ChatColor.RED + "ERROR with chat formatting! Send the above error to the plugin's author.");
 		}
 		return result;
 	}
@@ -61,15 +62,16 @@ public class Tools {
 	 * possible.
 	 *
 	 * @param center the target entity at the center of the fireball hit.
+	 * @param radius at which to check for entities.
 	 * @return false if there are no entities nearby, true otherwise.
 	 */
-	public boolean setKnockback(Entity center) {
+	public boolean setKnockback(Entity center, double radius) {
 
 		Location target = center.getLocation();
 
 		int maxHeight = plugin.getConfig().getInt("MaxJumpHeight");
 
-		List<Entity> nearbyEntities = center.getNearbyEntities(maxHeight, maxHeight, maxHeight);
+		List<Entity> nearbyEntities = center.getNearbyEntities(radius, radius, radius);
 
 		if ((nearbyEntities == null) || nearbyEntities.isEmpty()) {
 			return false;
@@ -85,10 +87,27 @@ public class Tools {
 
 		for (LivingEntity entity : validEntities) {
 
-			double distance = (maxHeight - target.distance(entity.getLocation())) * -1;
+			if ((entity instanceof Player)) {
+				Player player = (Player) entity;
+				if (player.isFlying()) {
+					continue;
+				}
+				if (player.isConversing()) {
+					continue;
+				}
+				if (player.isGliding()) {
+					continue;
+				}
+			}
 
-			Vector newVelocity = (entity.getLocation().toVector().subtract(target.toVector())).multiply(distance);
-			entity.setVelocity(newVelocity);
+			double distance = (maxHeight - entity.getLocation().distance(target));
+
+			double TWO_PI = 1.76 * Math.PI;
+
+			Vector variantVel = entity.getLocation().getDirection().multiply(-1);
+			variantVel = variantVel.setY(distance / TWO_PI);
+
+			entity.setVelocity(variantVel);
 
 		}
 

@@ -103,13 +103,6 @@ public class FireballThrow implements Listener {
 
 					} else {
 
-						/*
-						 * Material pb = p.getLocation().add(0, -1, 0).getBlock().getType(); Material
-						 * pbx1 = p.getLocation().add(1, -1, 0).getBlock().getType(); Material pbz1 =
-						 * p.getLocation().add(0, -1, 1).getBlock().getType(); Material pbx2 =
-						 * p.getLocation().add(-1, -1, 0).getBlock().getType(); Material pbz2 =
-						 * p.getLocation().add(0, -1, -1).getBlock().getType();
-						 */
 						Material air = Material.AIR;
 
 						int consume;
@@ -159,36 +152,6 @@ public class FireballThrow implements Listener {
 							cooldown.put(player.getName(), System.currentTimeMillis());
 
 							this.throwBall(p.launchProjectile(Fireball.class));
-
-							/*
-							 *
-							 * if ((pb != air) || (pbx1 != air) || (pbx2 != air) || (pbz1 != air) || (pbz2
-							 * != air)) { float pp = p.getLocation().getPitch();
-							 *
-							 * if ((pp >= 70.0) && (pp <= 80.4)) {
-							 * doThrow(p.launchProjectile(Fireball.class)); event.getPlayer()
-							 * .setVelocity(event.getPlayer().getLocation().getDirection().multiply(3.8));
-							 * event.getPlayer().setVelocity(new
-							 * Vector(event.getPlayer().getVelocity().getX(), 1.5D,
-							 * event.getPlayer().getVelocity().getZ())); } else if ((pp >= 30.0) && (pp <
-							 * 70.0)) { doThrow(p.launchProjectile(Fireball.class)); event.getPlayer()
-							 * .setVelocity(event.getPlayer().getLocation().getDirection().multiply(-0.6));
-							 * event.getPlayer().setVelocity(new
-							 * Vector(event.getPlayer().getVelocity().getX(), 1.5D,
-							 * event.getPlayer().getVelocity().getZ())); } else if ((pp >= 80.5)) {
-							 * doThrow(p.launchProjectile(Fireball.class)); event.getPlayer()
-							 * .setVelocity(event.getPlayer().getLocation().getDirection().multiply(3.8));
-							 * event.getPlayer().setVelocity(new
-							 * Vector(event.getPlayer().getVelocity().getX(), 2.5,
-							 * event.getPlayer().getVelocity().getZ())); } else if ((pp <= 29.0)) {
-							 * doThrow(p.launchProjectile(Fireball.class)); event.getPlayer()
-							 * .setVelocity(event.getPlayer().getLocation().getDirection().multiply(-0.2));
-							 * event.getPlayer().setVelocity(new
-							 * Vector(event.getPlayer().getVelocity().getX(), 0.2D,
-							 * event.getPlayer().getVelocity().getZ())); } else {
-							 * doThrow(p.launchProjectile(Fireball.class)); } } else {
-							 * doThrow(p.launchProjectile(Fireball.class)); }
-							 */
 
 						} else {
 							player.sendMessage(tools.chat(config.getString("NoPermissionMessage")));
