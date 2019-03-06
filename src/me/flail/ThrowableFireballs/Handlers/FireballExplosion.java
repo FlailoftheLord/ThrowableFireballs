@@ -18,6 +18,9 @@
 
 package me.flail.ThrowableFireballs.Handlers;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.block.Block;
@@ -27,6 +30,7 @@ import org.bukkit.entity.Fireball;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockExplodeEvent;
+import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -69,11 +73,59 @@ public class FireballExplosion implements Listener {
 
 					World fbWorld = fireball.getWorld();
 
+					plugin.tossed = true;
 					fbWorld.createExplosion(fbLoc, power, doesFire);
 
 					new Tools().setKnockback(fireball, power * 1.2);
 
+					plugin.scheduler.scheduleSyncDelayedTask(plugin, () -> {
+						plugin.tossed = false;
+					}, 4);
 				}
+
+			}
+
+		}
+
+	}
+
+	@EventHandler
+	public void blockBoom(EntityExplodeEvent event) {
+
+		Entity e = event.getEntity();
+
+		List<Block> newList = new ArrayList<>();
+
+		if ((e != null) && plugin.tossed) {
+			if (e.hasMetadata("HolyBalls") || ((e.getCustomName() != null) && e.getCustomName().equals("HolyBalls"))) {
+
+				List<String> immuneBlocks = plugin.getConfig().getStringList("ImmuneBlocks");
+				List<String> immuneKeys = plugin.getConfig().getStringList("ImmuneBlockKeywords");
+				for (String s : immuneBlocks.toArray(new String[] {})) {
+					immuneBlocks.remove(s);
+					immuneBlocks.add(s.toUpperCase());
+				}
+
+				for (Block block : event.blockList().toArray(new Block[] {})) {
+					String type = block.getType().toString();
+					if (immuneBlocks.contains(type)) {
+						event.blockList().remove(block);
+					} else {
+						newList.add(block);
+					}
+
+					for (String s : immuneKeys) {
+						if (type.contains(s.toUpperCase())) {
+							event.blockList().remove(block);
+						} else {
+							newList.add(block);
+						}
+					}
+
+				}
+
+				event.blockList().clear();
+				event.blockList().addAll(newList);
 
 			}
 
@@ -84,7 +136,24 @@ public class FireballExplosion implements Listener {
 	@EventHandler
 	public void blockBoom(BlockExplodeEvent event) {
 
+		List<String> immuneBlocks = plugin.getConfig().getStringList("ImmuneBlocks");
+		List<String> immuneKeys = plugin.getConfig().getStringList("ImmuneBlockKeywords");
+		for (String s : immuneBlocks.toArray(new String[] {})) {
+			immuneBlocks.remove(s);
+			immuneBlocks.add(s.toUpperCase());
+		}
+
 		for (Block block : event.blockList().toArray(new Block[] {})) {
+			String type = block.getType().toString();
+			if (immuneBlocks.contains(type)) {
+				event.blockList().remove(block);
+			}
+
+			for (String s : immuneKeys) {
+				if (type.contains(s.toUpperCase())) {
+					event.blockList().remove(block);
+				}
+			}
 
 		}
 

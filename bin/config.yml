@@ -15,10 +15,11 @@
 #-----------------------------------------------------------------
 
 # Wether the fireball does a natural, Ghast-Initiated explosion.
+# NOTE: this will not cause as much knockback and may not cancel block damage.
 # if set to true the below values will be ignored.
 # if set to false, the plugin will use the below explosion settings 
 # for creating the explosion manually.
-NaturalExplosion: true
+NaturalExplosion: false
 
 # Set the Explosion Power of the Fireball on impact, set it to 0 to disable
 FireballExplosionPower: 3
@@ -46,7 +47,8 @@ FireballSetFire: true
 AllowOffhandThrowing: true
 
 # Should players be allowed to use regular fire charges like fireballs?
-UseFirechrage: false
+# Most likely won't work right now...
+# UseFirechrage: false
 
 # Set the maximum number of blocks in height you can jump with a fireball
 MaxJumpHeight: 8

@@ -161,6 +161,7 @@ public class Commands implements CommandExecutor {
 
 			if (player.isOp() || player.hasPermission("lol.fireball.lol")) {
 				player.sendMessage(tools.chat("%prefix% &6&o&lYass bb! &4&l<3"));
+				player.getInventory().addItem(new FireballItem().fireball());
 			} else if ((player.isOp() == false) && !(player.hasPermission("lol.fireball.lol"))) {
 				player.sendMessage(tools.chat("%prefix% &elol, don't you wish!"));
 			}

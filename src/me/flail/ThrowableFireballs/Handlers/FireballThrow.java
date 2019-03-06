@@ -31,6 +31,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.util.Vector;
 
@@ -57,6 +58,9 @@ public class FireballThrow implements Listener {
 
 		if ((a == Action.RIGHT_CLICK_BLOCK) || (a == Action.RIGHT_CLICK_AIR)) {
 
+			boolean allowFirecharge = config.getBoolean("UseFirecharge");
+			boolean fboEnabled = config.getBoolean("AllowOffhandThrowing");
+
 			double cooldownTime = config.getDouble("Cooldown");
 
 			ItemStack fbItem = new FireballItem().fireball();
@@ -65,14 +69,15 @@ public class FireballThrow implements Listener {
 
 				ItemStack fb = player.getInventory().getItemInMainHand();
 				ItemStack fbo = player.getInventory().getItemInOffHand();
-				boolean fboEnabled = config.getBoolean("AllowOffhandThrowing");
+
 				ItemStack item = event.getItem();
-				int amount = item.getAmount();
 				if (item != null) {
-					fbItem.setAmount(amount);
+					fbItem.setAmount(item.getAmount());
 				}
 
-				if (fb.equals(fbItem) || (fbo.equals(fbItem) && fboEnabled)) {
+				if ((allowFirecharge && fb.getType().equals(Material.FIRE_CHARGE))
+						|| (allowFirecharge && fbo.getType().equals(Material.FIRE_CHARGE)) || fb.equals(fbItem)
+						|| (fbo.equals(fbItem) && fboEnabled)) {
 
 					Player p = event.getPlayer();
 
@@ -81,7 +86,6 @@ public class FireballThrow implements Listener {
 					event.setCancelled(true);
 
 					String pWorld = p.getWorld().getName().toLowerCase();
-
 					List<String> noThrowWorlds = config.getStringList("NoThrowZones");
 
 					for (String world : noThrowWorlds) {
@@ -117,14 +121,14 @@ public class FireballThrow implements Listener {
 								consume = 0;
 							}
 
-							if (amount < consume) {
+							if (item.getAmount() < consume) {
 								return;
 							}
 
-							if (amount == consume) {
+							if (item.getAmount() == consume) {
 								p.getInventory().removeItem(new ItemStack(item));
 							} else {
-								item.setAmount(amount - consume);
+								item.setAmount(item.getAmount() - consume);
 							}
 
 							if (cooldown.containsKey(p.getName())) {
@@ -132,7 +136,7 @@ public class FireballThrow implements Listener {
 								double timeLeft = ((cooldown.get(p.getName()) / 1000) + cooldownTime)
 										- (System.currentTimeMillis() / 1000);
 
-								boolean sendCooldownMessage = config.getBoolean("CooldownMessageEnabled");
+								boolean sendCooldownMessage = config.getBoolean("CooldownMessageEnabled", false);
 
 								String cooldownMessage = config.getString("CooldownMessage").replace("%cooldown%",
 										timeLeft + "");
@@ -154,7 +158,8 @@ public class FireballThrow implements Listener {
 							this.throwBall(p.launchProjectile(Fireball.class));
 
 						} else {
-							player.sendMessage(tools.chat(config.getString("NoPermissionMessage")));
+							player.sendMessage(tools.chat(
+									config.getString("NoPermissionMessage", "%prefix% &cYou don't have permission!")));
 						}
 
 					}
@@ -179,6 +184,7 @@ public class FireballThrow implements Listener {
 			ball.setIsIncendiary(doesNaturalDamage);
 			ball.setYield(1);
 			ball.setCustomName("HolyBalls");
+			ball.setMetadata("HolyBalls", new FixedMetadataValue(plugin, true));
 			ball.setCustomNameVisible(false);
 			Vector velocity = ball.getVelocity();
 

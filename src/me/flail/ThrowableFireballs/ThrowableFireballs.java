@@ -41,6 +41,7 @@ import me.flail.ThrowableFireballs.Handlers.FireballVelocity;
 public class ThrowableFireballs extends JavaPlugin implements CommandExecutor, Listener {
 
 	private ConsoleCommandSender console = Bukkit.getConsoleSender();
+	public boolean tossed = false;
 
 	private String version;
 
@@ -58,9 +59,9 @@ public class ThrowableFireballs extends JavaPlugin implements CommandExecutor, L
 		/*
 		 * ConfigUpdater updater = new ConfigUpdater();
 		 * scheduler.scheduleSyncDelayedTask(this, () -> {
-		 * 
+		 *
 		 * updater.updateConfig(this.getConfig());
-		 * 
+		 *
 		 * }, 30L);
 		 */
 		registerRecipes();
