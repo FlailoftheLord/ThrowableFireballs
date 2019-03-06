@@ -58,13 +58,13 @@ public class ConfigUpdater {
 			FileConfiguration config = new YamlConfiguration();
 			config.load(new FileReader(new File("plugins/ThrowableFireballs/old-config.yml")));
 
-			if (confDb.get().saveToString().equalsIgnoreCase(config.saveToString())) {
-				File oldFile = new File("plugins/ThrowableFireballs/old-config.yml");
-				if (oldFile.exists()) {
-					oldFile.delete();
-				}
-
-			}
+			/*
+			 * if (confDb.get().saveToString().equalsIgnoreCase(config.saveToString())) {
+			 * File oldFile = new File("plugins/ThrowableFireballs/old-config.yml"); if
+			 * (oldFile.exists()) { oldFile.delete(); }
+			 * 
+			 * }
+			 */
 
 			return true;
 		} catch (Throwable t) {

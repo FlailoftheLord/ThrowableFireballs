@@ -32,6 +32,7 @@ import org.bukkit.entity.Fireball;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
+import me.flail.ThrowableFireballs.Config.ConfigUpdater;
 import me.flail.ThrowableFireballs.Handlers.FireballItem;
 import me.flail.ThrowableFireballs.Handlers.FireballThrow;
 
@@ -124,6 +125,20 @@ public class Commands implements CommandExecutor {
 						player.getInventory().addItem(fireball);
 
 						player.sendMessage(tools.chat("%prefix% &aYou got a fireball!"));
+
+					} else if (args[0].equalsIgnoreCase("updateconfig")) {
+						if (player.hasPermission("fireballs.op")) {
+
+							ConfigUpdater updater = new ConfigUpdater();
+
+							updater.updateConfig(plugin.getConfig());
+
+							player.sendMessage(
+									tools.chat("%prefix% &aUpdated your config file to the latest settings!"));
+							player.sendMessage(tools.chat(
+									"&7 a copy of your old config was saved as &3'old-config.yml' &7in the base ThrowableFireballs folder."));
+
+						}
 
 					} else {
 
