@@ -24,8 +24,12 @@ permissions:
   fireballs.throw:
     description: throw ballz ;D
     default: true
+  fireballs.bypass:
+    description: bypass the cooldown
+    default: op
       
  # Permissions
  #   fireballs.op
  #   fireballs.infinite
- #   fireballs.use
+ #   fireballs.throw
+ #   fireballs.bypass

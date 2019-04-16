@@ -14,7 +14,7 @@ public class Config {
 	 *
 	 * @return config file formatted as {@link FileConfiguration}
 	 */
-	public FileConfiguration get() {
+	public static FileConfiguration get() {
 		FileConfiguration config = new YamlConfiguration();
 		File file = new File("plugins/ThrowableFireballs/config.yml");
 		try {

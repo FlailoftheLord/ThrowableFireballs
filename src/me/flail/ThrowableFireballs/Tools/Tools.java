@@ -116,4 +116,13 @@ public class Tools {
 		return true;
 	}
 
+	protected String removeChars(String message, String[] chars) {
+		String modified = message;
+		for (String c : chars) {
+			modified = modified.replace(c, "");
+		}
+
+		return modified;
+	}
+
 }

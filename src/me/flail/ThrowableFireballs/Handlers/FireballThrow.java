@@ -115,21 +115,7 @@ public class FireballThrow implements Listener {
 
 							Material offHandItem = player.getInventory().getItemInOffHand().getType();
 
-							if (p.hasPermission("fireballs.infinite")) {
-								consume = 0;
-							}
-
-							if (item.getAmount() < consume) {
-								return;
-							}
-
-							if (item.getAmount() == consume) {
-								p.getInventory().removeItem(new ItemStack(item));
-							} else {
-								item.setAmount(item.getAmount() - consume);
-							}
-
-							if (cooldown.containsKey(p.getName())) {
+							if (cooldown.containsKey(p.getName()) && !p.hasPermission("fireballs.bypass")) {
 
 								double timeLeft = ((cooldown.get(p.getName()) / 1000) + cooldownTime)
 										- (System.currentTimeMillis() / 1000);
@@ -143,12 +129,27 @@ public class FireballThrow implements Listener {
 									if ((offHandItem == null) || (offHandItem == air)) {
 										if (sendCooldownMessage) {
 											player.sendMessage(tools.chat(cooldownMessage));
+											consume = 0;
 										}
 
 									}
 									return;
 								}
 
+							}
+
+							if (p.hasPermission("fireballs.infinite")) {
+								consume = 0;
+							}
+
+							if (item.getAmount() < consume) {
+								return;
+							}
+
+							if (item.getAmount() == consume) {
+								p.getInventory().removeItem(new ItemStack(item));
+							} else {
+								item.setAmount(item.getAmount() - consume);
 							}
 
 							cooldown.put(player.getName(), System.currentTimeMillis());
