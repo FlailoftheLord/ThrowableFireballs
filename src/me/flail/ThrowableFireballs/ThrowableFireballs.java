@@ -86,13 +86,18 @@ public class ThrowableFireballs extends JavaPlugin implements CommandExecutor, L
 	}
 
 	@Override
+	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+		return new Commands(sender, command, label, args).run();
+	}
+
+	@Override
 	public List<String> onTabComplete(CommandSender sender, Command command, String label, String[] args) {
 		return new TabCompleter(command).construct(args);
 	}
 
 	private void registerCommands() {
 		for (String string : getDescription().getCommands().keySet()) {
-			this.getCommand(string).setExecutor(new Commands());
+			this.getCommand(string).setExecutor(this);
 		}
 	}
 

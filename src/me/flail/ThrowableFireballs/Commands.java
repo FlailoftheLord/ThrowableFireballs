@@ -19,12 +19,13 @@
 
 package me.flail.ThrowableFireballs;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Fireball;
@@ -36,19 +37,29 @@ import me.flail.ThrowableFireballs.Handlers.FireballItem;
 import me.flail.ThrowableFireballs.Handlers.FireballThrow;
 import me.flail.ThrowableFireballs.Tools.Tools;
 
-public class Commands implements CommandExecutor {
+public class Commands  extends Tools {
 	private Command command;
+	private String label;
+	private CommandSender sender;
+	private String[] args;
 
 	private ThrowableFireballs plugin = ThrowableFireballs.getPlugin(ThrowableFireballs.class);
-	private Tools tools = new Tools();
+	private FileConfiguration config = plugin.getConfig();
 
-	@Override
+	public Commands(CommandSender sender, Command command, String label, String[] args) {
+		this.sender = sender;
+		this.command = command;
+		this.args = args;
+		this.label = label;
+	}
+
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 		this.command = command;
+		this.label = label;
+		config = plugin.getConfig();
 
 		String cmd = command.getName().toLowerCase();
 
-		FileConfiguration config = plugin.getConfig();
 
 		String reloadMessage = config.getString("ReloadMessage");
 
@@ -61,7 +72,7 @@ public class Commands implements CommandExecutor {
 
 				if (args[0].equalsIgnoreCase("info") || args[0].equalsIgnoreCase("about")) {
 
-					player.sendMessage(tools.chat(
+					player.sendMessage(chat(
 							"%prefix% &6&lThrowableFireballs &7running version &e%version%  &2by FlailoftheLord."));
 
 				} else if (args[0].equalsIgnoreCase("get")) {
@@ -74,7 +85,7 @@ public class Commands implements CommandExecutor {
 
 							if ((amount > 64) || (amount < 1)) {
 
-								player.sendMessage(tools.chat("%prefix% &cProper usage: &7/%cmd% get [number(1-64)]")
+								player.sendMessage(chat("%prefix% &cProper usage: &7/%cmd% get [number(1-64)]")
 										.replace("%cmd%", cmd));
 
 							} else {
@@ -89,12 +100,12 @@ public class Commands implements CommandExecutor {
 
 								player.getInventory().addItem(fireball);
 
-								player.sendMessage(tools.chat("%prefix% &ayou got %num% fireballs!").replace("%num%",
+								player.sendMessage(chat("%prefix% &ayou got %num% fireballs!").replace("%num%",
 										amount + ""));
 							}
 
 						} catch (NumberFormatException e) {
-							player.sendMessage(tools.chat("%prefix% &cProper usage: &7/%cmd% get [number(1-64)]")
+							player.sendMessage(chat("%prefix% &cProper usage: &7/%cmd% get [number(1-64)]")
 									.replace("%cmd%", cmd));
 						}
 
@@ -112,9 +123,9 @@ public class Commands implements CommandExecutor {
 
 							plugin.reloadConfig();
 
-							sender.sendMessage(tools.chat(reloadMessage));
+							sender.sendMessage(chat(reloadMessage));
 						} else {
-							player.sendMessage(tools.chat(noPermission));
+							player.sendMessage(chat(noPermission));
 						}
 
 					} else if (args[0].equalsIgnoreCase("get")) {
@@ -125,7 +136,7 @@ public class Commands implements CommandExecutor {
 
 						player.getInventory().addItem(fireball);
 
-						player.sendMessage(tools.chat("%prefix% &aYou got a fireball!"));
+						player.sendMessage(chat("%prefix% &aYou got a fireball!"));
 
 					} else if (args[0].equalsIgnoreCase("updateconfig")) {
 						if (player.hasPermission("fireballs.op")) {
@@ -135,8 +146,8 @@ public class Commands implements CommandExecutor {
 							updater.updateConfig(plugin.getConfig());
 
 							player.sendMessage(
-									tools.chat("%prefix% &aUpdated your config file to the latest settings!"));
-							player.sendMessage(tools.chat(
+									chat("%prefix% &aUpdated your config file to the latest settings!"));
+							player.sendMessage(chat(
 									"&7 a copy of your old config was saved as &3'old-config.yml' &7in the base ThrowableFireballs folder."));
 
 						}
@@ -160,7 +171,7 @@ public class Commands implements CommandExecutor {
 					}
 
 				} else {
-					player.sendMessage(tools.chat(noPermission));
+					player.sendMessage(chat(noPermission));
 				}
 			} else if (args.length == 0) {
 				if (player.hasPermission("fireballs.op")) {
@@ -169,28 +180,75 @@ public class Commands implements CommandExecutor {
 					return true;
 
 				} else {
-					player.sendMessage(tools.chat(noPermission));
+					player.sendMessage(chat(noPermission));
 				}
 			}
 
 		} else if (cmd.equals("icanhasfireball")) {
 
 			if (player.isOp() || player.hasPermission("lol.fireball.lol")) {
-				player.sendMessage(tools.chat("%prefix% &6&o&lYass bb! &4&l<3"));
+				player.sendMessage(chat("%prefix% &6&o&lYass bb! &4&l<3"));
 				player.getInventory().addItem(new FireballItem().fireball());
 			} else if ((player.isOp() == false) && !(player.hasPermission("lol.fireball.lol"))) {
-				player.sendMessage(tools.chat("%prefix% &elol, don't you wish!"));
+				player.sendMessage(chat("%prefix% &elol, don't you wish!"));
 			}
 
 		}
 
-		return run(sender, args);
+		return run();
 	}
 
-	protected boolean run(CommandSender sender, String[] args) {
+	protected boolean run() {
+		String reloadMessage = config.getString("ReloadMessage");
+		String noPermission = config.getString("NoPermissionMessage");
+		String defaultMsg = chat("%prefix% &6&lThrowableFireballs &7running version &e%version%  &2by FlailoftheLord.");
+		String versionInfo = chat("&7Running on " + plugin.server.getName() + " version " + plugin.server.getVersion());
+		String usage = chat("&7Usage&8: &7/" + label + " <help>");
+		String[] arguments = { "reload  &oreload the configuration file.", "info  &odump plugin information.",
+				"updateconfig  &omanually update your configuration file.", "give <player> [amount]  &ogive a player a fireball.",
+		"get [amount]  &oget a fireball." };
+
+		List<String> helpLines = new ArrayList<>();
+		helpLines.add(chat("&6ThrowableFireballs &eCommand usage."));
+		for (String arg : arguments) {
+			helpLines.add(chat("&8-> &7/" + label + " " + arg));
+		}
+
 		switch (args.length) {
+		case 0:
+			sender.sendMessage(defaultMsg);
+			if (sender.hasPermission("fireballs.op")) {
+				sender.sendMessage(usage);
+			}
 
 		case 1:
+			switch (args[0].toLowerCase()) {
+
+			case "help":
+				for (String line : helpLines) {
+					sender.sendMessage(line);
+				}
+				break;
+			case "info":
+				sender.sendMessage(defaultMsg);
+				if (sender.hasPermission("fireballs.op")) {
+					sender.sendMessage(versionInfo);
+					sender.sendMessage(usage);
+				}
+				break;
+			case "get":
+				if (sender.hasPermission("fireballs.op")&& (sender instanceof Player)) {
+					Player player = (Player) sender;
+					player.getInventory().addItem(new FireballItem().fireball());
+					sender.sendMessage(chat("%prefix% &ayou got a fireball."));
+					break;
+				}
+				sender.sendMessage(chat("You can't get a fireball!"));
+				break;
+			default:
+				sender.sendMessage(usage);
+
+			}
 
 		case 2:
 
