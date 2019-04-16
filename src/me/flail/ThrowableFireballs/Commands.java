@@ -20,7 +20,6 @@
 package me.flail.ThrowableFireballs;
 
 import java.util.HashMap;
-import java.util.Locale;
 import java.util.Map;
 
 import org.bukkit.Bukkit;
@@ -35,17 +34,19 @@ import org.bukkit.inventory.ItemStack;
 import me.flail.ThrowableFireballs.Config.ConfigUpdater;
 import me.flail.ThrowableFireballs.Handlers.FireballItem;
 import me.flail.ThrowableFireballs.Handlers.FireballThrow;
+import me.flail.ThrowableFireballs.Tools.Tools;
 
 public class Commands implements CommandExecutor {
+	private Command command;
 
 	private ThrowableFireballs plugin = ThrowableFireballs.getPlugin(ThrowableFireballs.class);
-
 	private Tools tools = new Tools();
 
 	@Override
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+		this.command = command;
 
-		String cmd = command.getName().toLowerCase(Locale.ENGLISH);
+		String cmd = command.getName().toLowerCase();
 
 		FileConfiguration config = plugin.getConfig();
 
@@ -183,7 +184,22 @@ public class Commands implements CommandExecutor {
 
 		}
 
-		return true;
+		return run(sender, args);
+	}
+
+	protected boolean run(CommandSender sender, String[] args) {
+		switch (args.length) {
+
+		case 1:
+
+		case 2:
+
+		case 3:
+
+		}
+
+
+		return sender != null;
 	}
 
 }

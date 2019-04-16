@@ -33,9 +33,6 @@ ImmuneBlocks:
 ImmuneBlockKeywords:
 - "stone"
 
-# Probbly doesn't work...
-FireballSpeed: 2.0
-
 # Set the amount of damage the fireball does to an entity or player.
 # 1 = one heart
 FireballDamage: 3.5
@@ -48,7 +45,7 @@ AllowOffhandThrowing: true
 
 # Should players be allowed to use regular fire charges like fireballs?
 # Most likely won't work right now...
-# UseFirechrage: false
+UseFirecharge: false
 
 # Set the maximum number of blocks in height you can jump with a fireball
 MaxJumpHeight: 8

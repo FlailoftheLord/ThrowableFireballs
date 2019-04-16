@@ -16,7 +16,7 @@
  *
  */
 
-package me.flail.ThrowableFireballs;
+package me.flail.ThrowableFireballs.Tools;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,6 +29,8 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
+
+import me.flail.ThrowableFireballs.ThrowableFireballs;
 
 public class Tools {
 

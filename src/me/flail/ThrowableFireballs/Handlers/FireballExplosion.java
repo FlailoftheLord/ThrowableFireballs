@@ -35,7 +35,7 @@ import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import me.flail.ThrowableFireballs.ThrowableFireballs;
-import me.flail.ThrowableFireballs.Tools;
+import me.flail.ThrowableFireballs.Tools.Tools;
 
 public class FireballExplosion implements Listener {
 

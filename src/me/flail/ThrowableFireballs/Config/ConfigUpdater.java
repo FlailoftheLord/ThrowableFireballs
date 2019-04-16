@@ -7,18 +7,19 @@ import java.io.FileReader;
 import java.io.FileWriter;
 
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.configuration.file.YamlConfiguration;
 
 public class ConfigUpdater {
 
 	public boolean updateConfig(FileConfiguration config) {
 		Config confDb = new Config();
 
-		for (String option : confDb.options()) {
-			if (!config.isConfigurationSection(option)) {
-				File configFile = new File("plugins/ThrowableFireballs/config.yml");
+		File configFile = new File("plugins/ThrowableFireballs/config.yml");
 
-				File backup = new File("plugins/ThrowableFireballs/old-config.yml");
+		File backup = new File("plugins/ThrowableFireballs/old-config.yml");
+
+		for (String option : confDb.options()) {
+			if (!config.contains(option)) {
+
 
 				try {
 					BufferedReader reader = new BufferedReader(new FileReader(configFile));
@@ -54,17 +55,6 @@ public class ConfigUpdater {
 			writer.write(confDb.configurationDatabase());
 
 			writer.close();
-
-			FileConfiguration config = new YamlConfiguration();
-			config.load(new FileReader(new File("plugins/ThrowableFireballs/old-config.yml")));
-
-			/*
-			 * if (confDb.get().saveToString().equalsIgnoreCase(config.saveToString())) {
-			 * File oldFile = new File("plugins/ThrowableFireballs/old-config.yml"); if
-			 * (oldFile.exists()) { oldFile.delete(); }
-			 * 
-			 * }
-			 */
 
 			return true;
 		} catch (Throwable t) {

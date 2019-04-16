@@ -28,7 +28,7 @@ import org.bukkit.inventory.Recipe;
 import org.bukkit.inventory.ShapedRecipe;
 
 import me.flail.ThrowableFireballs.ThrowableFireballs;
-import me.flail.ThrowableFireballs.Tools;
+import me.flail.ThrowableFireballs.Tools.Tools;
 
 public class FireballRecipe {
 

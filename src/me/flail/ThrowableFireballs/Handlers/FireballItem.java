@@ -28,7 +28,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import me.flail.ThrowableFireballs.ThrowableFireballs;
-import me.flail.ThrowableFireballs.Tools;
+import me.flail.ThrowableFireballs.Tools.Tools;
 
 public class FireballItem {
 

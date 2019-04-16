@@ -36,7 +36,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.util.Vector;
 
 import me.flail.ThrowableFireballs.ThrowableFireballs;
-import me.flail.ThrowableFireballs.Tools;
+import me.flail.ThrowableFireballs.Tools.Tools;
 
 public class FireballThrow implements Listener {
 
@@ -109,13 +109,11 @@ public class FireballThrow implements Listener {
 
 						Material air = Material.AIR;
 
-						int consume;
+						int consume = 1;
 
 						if (p.hasPermission("fireballs.throw")) {
 
 							Material offHandItem = player.getInventory().getItemInOffHand().getType();
-
-							consume = 1;
 
 							if (p.hasPermission("fireballs.infinite")) {
 								consume = 0;

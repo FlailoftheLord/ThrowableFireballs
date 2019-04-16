@@ -22,12 +22,15 @@ import java.util.List;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Server;
+import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
+import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.Recipe;
+import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitScheduler;
 
@@ -37,6 +40,8 @@ import me.flail.ThrowableFireballs.Handlers.FireballItem;
 import me.flail.ThrowableFireballs.Handlers.FireballRecipe;
 import me.flail.ThrowableFireballs.Handlers.FireballThrow;
 import me.flail.ThrowableFireballs.Handlers.FireballVelocity;
+import me.flail.ThrowableFireballs.Tools.TabCompleter;
+import me.flail.ThrowableFireballs.Tools.Tools;
 
 public class ThrowableFireballs extends JavaPlugin implements CommandExecutor, Listener {
 
@@ -50,31 +55,17 @@ public class ThrowableFireballs extends JavaPlugin implements CommandExecutor, L
 
 	@Override
 	public void onEnable() {
-
 		Tools tools = new Tools();
 
 		// Save config files
 		saveDefaultConfig();
 
-		/*
-		 * ConfigUpdater updater = new ConfigUpdater();
-		 * scheduler.scheduleSyncDelayedTask(this, () -> {
-		 *
-		 * updater.updateConfig(this.getConfig());
-		 *
-		 * }, 30L);
-		 */
 		registerRecipes();
 
 		// Register Events and Commands
-		server.getPluginManager().registerEvents(new FireballThrow(), this);
-		server.getPluginManager().registerEvents(new FireballExplosion(), this);
-		server.getPluginManager().registerEvents(new FireballDamage(), this);
-		server.getPluginManager().registerEvents(new FireballVelocity(), this);
+		registerEvents();
 
-		getCommand("fireball").setExecutor(new Commands());
-		getCommand("throwablefireballs").setExecutor(new Commands());
-		getCommand("icanhasfireball").setExecutor(new Commands());
+		registerCommands();
 
 		// Friendly console spam ;)
 		version = getDescription().getVersion();
@@ -92,6 +83,26 @@ public class ThrowableFireballs extends JavaPlugin implements CommandExecutor, L
 
 		scheduler.cancelTasks(this);
 		console.sendMessage(tools.chat("&6&lFarewell!"));
+	}
+
+	@Override
+	public List<String> onTabComplete(CommandSender sender, Command command, String label, String[] args) {
+		return new TabCompleter(command).construct(args);
+	}
+
+	private void registerCommands() {
+		for (String string : getDescription().getCommands().keySet()) {
+			this.getCommand(string).setExecutor(new Commands());
+		}
+	}
+
+	private void registerEvents() {
+		PluginManager manager = server.getPluginManager();
+		manager.registerEvents(new FireballExplosion(), this);
+		manager.registerEvents(new FireballDamage(), this);
+		manager.registerEvents(new FireballThrow(), this);
+		manager.registerEvents(new FireballVelocity(), this);
+
 	}
 
 	public void registerRecipes() {
