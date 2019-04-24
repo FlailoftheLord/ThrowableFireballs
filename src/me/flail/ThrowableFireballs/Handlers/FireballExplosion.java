@@ -60,7 +60,7 @@ public class FireballExplosion implements Listener {
 
 				String fbName = entity.getCustomName();
 
-				if (fbName.equals("HolyBalls")) {
+				if ((fbName != null) && (event.getHitBlock() != null) && fbName.equals("HolyBalls")) {
 
 					FileConfiguration config = plugin.getConfig();
 

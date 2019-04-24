@@ -20,6 +20,7 @@ package me.flail.ThrowableFireballs.Handlers;
 
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
@@ -30,7 +31,7 @@ public class FireballDamage implements Listener {
 
 	private ThrowableFireballs plugin = ThrowableFireballs.getPlugin(ThrowableFireballs.class);
 
-	@EventHandler
+	@EventHandler(priority = EventPriority.HIGH)
 	public void onFireballDamage(EntityDamageByEntityEvent event) {
 
 		FileConfiguration config = plugin.getConfig();
@@ -45,7 +46,7 @@ public class FireballDamage implements Listener {
 
 				String fbName = event.getDamager().getCustomName();
 
-				if (fbName.equals("HolyBalls")) {
+				if ((fbName != null) && fbName.equals("HolyBalls")) {
 
 					double damage = config.getDouble("FireballDamage") * 2;
 
