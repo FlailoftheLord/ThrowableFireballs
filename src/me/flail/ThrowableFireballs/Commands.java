@@ -26,12 +26,14 @@ import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.entity.Fireball;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import me.flail.ThrowableFireballs.Config.Config;
 import me.flail.ThrowableFireballs.Config.ConfigUpdater;
 import me.flail.ThrowableFireballs.Handlers.FireballItem;
+import me.flail.ThrowableFireballs.Handlers.FireballThrow;
 import me.flail.ThrowableFireballs.Tools.Tools;
 
 public class Commands  extends Tools {
@@ -107,12 +109,21 @@ public class Commands  extends Tools {
 			switch (args.length) {
 
 			case 0:
+				if (label.equalsIgnoreCase("fireball") && (sender instanceof Player)) {
+					Player player = (Player) sender;
+					if (player.hasPermission("fireballs.commandthrow")) {
+						new FireballThrow().throwBall(player.launchProjectile(Fireball.class));
+						break;
+					}
+				}
+
 				sender.sendMessage(defaultMsg);
 				if (sender.hasPermission("fireballs.op")) {
 					sender.sendMessage(usage);
 					break;
 				}
 
+				break;
 			case 1:
 				arg = args[0].toLowerCase();
 				switch (args[0].toLowerCase()) {
