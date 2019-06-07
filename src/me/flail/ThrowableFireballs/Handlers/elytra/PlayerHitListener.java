@@ -29,8 +29,13 @@ public class PlayerHitListener implements Listener {
 		if ((target != null) && (target instanceof Player)) {
 			Player player = (Player) target;
 			Entity projectile = event.getEntity();
-			if (player.isGliding() && projectile.isValid() && projectile.hasMetadata("HolyBalls")) {
-				player.setGliding(false);
+			if (player.isGliding()) {
+				if (((projectile.getCustomName() != null) && projectile.getCustomName().equals("HolyBalls"))
+						|| projectile.hasMetadata("HolyBalls")) {
+
+					player.setGliding(false);
+
+				}
 			}
 		}
 
