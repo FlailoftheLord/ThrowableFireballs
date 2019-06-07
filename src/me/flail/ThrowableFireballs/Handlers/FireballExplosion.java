@@ -69,18 +69,19 @@ public class FireballExplosion implements Listener {
 
 					Fireball fireball = (Fireball) entity;
 
+					if (!fireball.hasMetadata("HolyBalls")) {
+						return;
+					}
+
 					Location fbLoc = event.getHitBlock().getLocation();
 
 					World fbWorld = fireball.getWorld();
 
-					plugin.tossed = true;
+
 					fbWorld.createExplosion(fbLoc, power, doesFire);
 
 					new Tools().setKnockback(fireball, power * 1.2);
 
-					plugin.scheduler.scheduleSyncDelayedTask(plugin, () -> {
-						plugin.tossed = false;
-					}, 4);
 				}
 
 			}

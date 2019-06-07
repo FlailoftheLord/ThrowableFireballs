@@ -183,7 +183,7 @@ public class FireballThrow implements Listener {
 			ball.setIsIncendiary(doesNaturalDamage);
 			ball.setYield(1);
 			ball.setCustomName("HolyBalls");
-			ball.setMetadata("HolyBalls", new FixedMetadataValue(plugin, true));
+			ball.setMetadata("HolyBalls", new FixedMetadataValue(plugin, "fireball"));
 			ball.setCustomNameVisible(false);
 			Vector velocity = ball.getVelocity();
 
