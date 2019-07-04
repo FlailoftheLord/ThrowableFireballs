@@ -44,7 +44,6 @@ FireballSetFire: true
 AllowOffhandThrowing: true
 
 # Should players be allowed to use regular fire charges like fireballs?
-# Most likely won't work right now...
 UseFirecharge: false
 
 # Set the maximum number of blocks in height you can jump with a fireball
@@ -88,7 +87,7 @@ Lore:
 - "&7right click to throw"
 - "&7grief extreme ;)"
 
-
+# - - -
 # Heres the crafting recipe for the Fireballs!
 # Set the AmountGiven to any number to set the amount of the item given when you craft it.
 # Each line in the Pattern section is one row in the crafting table (3 x 3)
@@ -96,10 +95,7 @@ Lore:
 # letter represents in the Materials section below
 # You can get a full list of Item names here:
 #    https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Material.html
-
-# NOTE: SOME ITEM NAMES HAVE CHANGED IN THE 1.13 UPDATE!!
-# This will cause some items to not work in 1.12 and lower...
-# It is recommended that you only use this plugin with version 1.13 +
+# - - -
 # The plugin will give you a warning in the console if one of the items is invalid.
 CraftingRecipe:
   AmountGiven: 3
