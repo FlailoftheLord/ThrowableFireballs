@@ -78,6 +78,9 @@ CooldownMessage: "%prefix% &cYou must wait %cooldown% seconds before throwing th
 # Cooldown between uses in seconds set to 0 to disable
 Cooldown: 1
 
+# Don't want it to look like a FireCharge?
+FireballItem: "fire_charge"
+
 # Custom display name for the Fireball Item
 FireballName: "&6Fireball"
 

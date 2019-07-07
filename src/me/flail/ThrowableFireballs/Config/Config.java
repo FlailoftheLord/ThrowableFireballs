@@ -50,6 +50,7 @@ public class Config {
 		options.add("CooldownMessageEnabled");
 		options.add("CooldownMessage");
 		options.add("Cooldown");
+		options.add("FireballItem");
 		options.add("FireballName");
 		options.add("Lore");
 		options.add("CraftingRecipe");
@@ -151,6 +152,9 @@ public class Config {
 				"# Cooldown between uses in seconds set to 0 to disable\r\n" +
 				"Cooldown: 1\r\n" +
 				"\r\n" +
+				"# Don't want it to look like a FireCharge?\r\n" +
+				"FireballItem: \"fire_charge\"\r\n" +
+				"\r\n" +
 				"# Custom display name for the Fireball Item\r\n" +
 				"FireballName: \"&6Fireball\"\r\n" +
 				"\r\n" +
@@ -190,7 +194,6 @@ public class Config {
 				"";
 
 		return db;
-
 	}
 
 }

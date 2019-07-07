@@ -40,6 +40,8 @@ public class FireballItem {
 
 		FileConfiguration config = plugin.getConfig();
 
+		Material fireballType = Material
+				.matchMaterial(config.get("FireballItem", "FIRE_CHARGE").toString().toUpperCase().replaceAll("[^A-Z\\_]", ""));
 		String fbName = config.getString("FireballName");
 
 		List<String> fbLoreList = config.getStringList("Lore");
@@ -50,7 +52,7 @@ public class FireballItem {
 			fbLore.add(tools.chat(l));
 		}
 
-		ItemStack fb = new ItemStack(Material.FIRE_CHARGE);
+		ItemStack fb = new ItemStack(fireballType);
 
 		ItemMeta fbMeta = fb.getItemMeta();
 

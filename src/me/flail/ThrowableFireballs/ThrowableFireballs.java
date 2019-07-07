@@ -46,7 +46,7 @@ import me.flail.ThrowableFireballs.Tools.Tools;
 
 public class ThrowableFireballs extends JavaPlugin implements CommandExecutor, Listener {
 
-	private ConsoleCommandSender console = Bukkit.getConsoleSender();
+	public ConsoleCommandSender console = Bukkit.getConsoleSender();
 	public boolean tossed = false;
 
 	private String version;

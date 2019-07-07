@@ -20,7 +20,6 @@ public class ConfigUpdater {
 		for (String option : confDb.options()) {
 			if (!config.contains(option)) {
 
-
 				try {
 					BufferedReader reader = new BufferedReader(new FileReader(configFile));
 					BufferedWriter writer = new BufferedWriter(new FileWriter(backup));

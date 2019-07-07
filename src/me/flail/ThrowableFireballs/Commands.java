@@ -26,7 +26,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.entity.Fireball;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
@@ -112,7 +111,7 @@ public class Commands  extends Tools {
 				if (label.equalsIgnoreCase("fireball") && (sender instanceof Player)) {
 					Player player = (Player) sender;
 					if (player.hasPermission("fireballs.commandthrow")) {
-						new FireballThrow().throwBall(player.launchProjectile(Fireball.class));
+						new FireballThrow().throwBall(player);
 						break;
 					}
 				}

@@ -25,13 +25,18 @@ import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Fireball;
+import org.bukkit.entity.Item;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockExplodeEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.entity.ProjectileHitEvent;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import me.flail.ThrowableFireballs.ThrowableFireballs;
@@ -43,7 +48,7 @@ public class FireballExplosion implements Listener {
 
 	private FileConfiguration config = plugin.getConfig();
 
-	@EventHandler
+	@EventHandler(priority = EventPriority.HIGHEST)
 	public void fireballExplode(ProjectileHitEvent event) {
 
 		plugin = JavaPlugin.getPlugin(ThrowableFireballs.class);
@@ -52,9 +57,9 @@ public class FireballExplosion implements Listener {
 
 		Entity entity = event.getEntity();
 
-		boolean doesNaturalDamage = config.getBoolean("NaturalExplosion");
+		boolean doesNaturalDamage = config.getBoolean("NaturalExplosion", true);
 
-		if (doesNaturalDamage != true) {
+		if (!doesNaturalDamage) {
 
 			if (entity instanceof Fireball) {
 
@@ -64,7 +69,7 @@ public class FireballExplosion implements Listener {
 
 					FileConfiguration config = plugin.getConfig();
 
-					float power = config.getLong("FireballExplosionPower");
+					int power = config.getInt("FireballExplosionPower", 0);
 					boolean doesFire = config.getBoolean("FireballSetFire");
 
 					Fireball fireball = (Fireball) entity;
@@ -73,14 +78,51 @@ public class FireballExplosion implements Listener {
 						return;
 					}
 
-					Location fbLoc = event.getHitBlock().getLocation();
+					plugin.tossed = true;
 
+					Location fbLoc = event.getHitBlock().getLocation();
 					World fbWorld = fireball.getWorld();
 
+					if (power < 1) {
+						fireball.setIsIncendiary(false);
+						fireball.remove();
 
-					fbWorld.createExplosion(fbLoc, power, doesFire);
+					} else {
+						fbWorld.createExplosion(fbLoc, power, doesFire);
+
+					}
+
+					for (int i = power * -1; i <= power; i++) {
+						Block block = fbWorld.getBlockAt(fbLoc).getRelative(i, i, i);
+
+						block.setMetadata("Fireballed", new FixedMetadataValue(plugin, power));
+					}
 
 					new Tools().setKnockback(fireball, power * 1.2);
+
+
+					if (!fireball.getPassengers().isEmpty()) {
+						List<Entity> passengers = fireball.getPassengers();
+						if (passengers.get(0) instanceof ArmorStand) {
+							ArmorStand aStand = (ArmorStand) passengers.get(0);
+
+							ItemStack item = aStand.getHelmet();
+							aStand.remove();
+
+							Item droppedItem = fbWorld.dropItemNaturally(fbLoc, item);
+
+							droppedItem.setPickupDelay(Integer.MAX_VALUE);
+							droppedItem.setCustomName(new Tools().chat(config.getString("FireballName", "&6Fireball")));
+							droppedItem.setCustomNameVisible(true);
+
+							plugin.server.getScheduler().scheduleSyncDelayedTask(plugin, () -> {
+
+								droppedItem.remove();
+							}, 69L);
+
+						}
+
+					}
 
 				}
 
@@ -90,14 +132,14 @@ public class FireballExplosion implements Listener {
 
 	}
 
-	@EventHandler
+	// @EventHandler
 	public void blockBoom(EntityExplodeEvent event) {
 
 		Entity e = event.getEntity();
 
 		List<Block> newList = new ArrayList<>();
 
-		if ((e != null) && plugin.tossed) {
+		if ((e != null)) {
 			if (e.hasMetadata("HolyBalls") || ((e.getCustomName() != null) && e.getCustomName().equals("HolyBalls"))) {
 
 				List<String> immuneBlocks = plugin.getConfig().getStringList("ImmuneBlocks");
@@ -134,6 +176,7 @@ public class FireballExplosion implements Listener {
 
 	}
 
+
 	@EventHandler
 	public void blockBoom(BlockExplodeEvent event) {
 
@@ -145,15 +188,31 @@ public class FireballExplosion implements Listener {
 		}
 
 		for (Block block : event.blockList().toArray(new Block[] {})) {
-			String type = block.getType().toString();
-			if (immuneBlocks.contains(type)) {
-				event.blockList().remove(block);
-			}
 
-			for (String s : immuneKeys) {
-				if (type.contains(s.toUpperCase())) {
-					event.blockList().remove(block);
+			if (block.hasMetadata("Fireballed")) {
+				plugin.console.sendMessage("Fireballed Block!");
+
+				int power = block.getMetadata("Fireballed").get(0).asInt();
+
+				if (power > 0) {
+					String type = block.getType().toString();
+
+					if (immuneBlocks.contains(type)) {
+						event.blockList().remove(block);
+					}
+
+					for (String s : immuneKeys) {
+						if (type.contains(s.toUpperCase())) {
+							event.blockList().remove(block);
+						}
+					}
+
+					block.removeMetadata("Fireballed", plugin);
+					continue;
 				}
+
+				event.setCancelled(true);
+				break;
 			}
 
 		}

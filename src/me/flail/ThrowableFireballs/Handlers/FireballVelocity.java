@@ -22,47 +22,15 @@ import java.util.List;
 
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Fireball;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
-import org.bukkit.entity.Projectile;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.ProjectileLaunchEvent;
-import org.bukkit.projectiles.ProjectileSource;
 import org.bukkit.util.Vector;
 
-import me.flail.ThrowableFireballs.ThrowableFireballs;
-
 public class FireballVelocity implements Listener {
-
-	private ThrowableFireballs plugin = ThrowableFireballs.getPlugin(ThrowableFireballs.class);
-
-	// this isn't implemented yet, still messin' around with it.
-	public void onFireballToss(Projectile event) {
-
-		ProjectileSource shooter = event.getShooter();
-
-		if (shooter instanceof Player) {
-
-			EntityType projectile = event.getType();
-
-			if (projectile.equals(EntityType.FIREBALL)) {
-
-				double fireballVelocity = plugin.getConfig().getDouble("FireballSpeed");
-
-				Vector velocity = event.getVelocity();
-
-				Vector newVelocity = velocity.multiply(fireballVelocity);
-
-				event.setVelocity(newVelocity);
-
-			}
-
-		}
-
-	}
 
 	@EventHandler
 	public void playerThrow(ProjectileLaunchEvent event) {
