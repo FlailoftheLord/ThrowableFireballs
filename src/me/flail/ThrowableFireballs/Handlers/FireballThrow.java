@@ -21,7 +21,9 @@ package me.flail.ThrowableFireballs.Handlers;
 import java.util.HashMap;
 import java.util.List;
 
+import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.EntityType;
@@ -106,14 +108,12 @@ public class FireballThrow implements Listener {
 						player.sendMessage(tools.chat(noThrowingMessage));
 
 					} else {
-
-						Material air = Material.AIR;
-
 						int consume = 1;
 
 						if (player.hasPermission("fireballs.throw")) {
 
-							Material offHandItem = player.getInventory().getItemInOffHand().getType();
+							Material onHandItem = fb.getType();
+							Material offHandItem = fbo.getType();
 
 							if (cooldown.containsKey(player.getName()) && !player.hasPermission("fireballs.bypass")) {
 
@@ -126,7 +126,8 @@ public class FireballThrow implements Listener {
 										timeLeft + "");
 
 								if (timeLeft > 0) {
-									if ((offHandItem == null) || (offHandItem == air)) {
+									if (((offHandItem == null) && (onHandItem != null))
+											|| ((onHandItem == null) && (offHandItem == null))) {
 										if (sendCooldownMessage) {
 											player.sendMessage(tools.chat(cooldownMessage));
 											consume = 0;
@@ -171,26 +172,35 @@ public class FireballThrow implements Listener {
 
 	}
 
-	public void throwBall(Player player) {
-		Fireball ball = player.launchProjectile(Fireball.class);
+	public Fireball throwBall(Player player) {
+		Fireball fireball = player.launchProjectile(Fireball.class);
+
+		fireball.setYield(0F);
+		World world = fireball.getWorld();
+		Vector velocity = fireball.getVelocity();
+		fireball.remove();
 
 		config = plugin.getConfig();
 
 		double fireballVelocity = config.getDouble("FireballSpeed", 1.6);
 		boolean doesNaturalDamage = config.getBoolean("NaturalExplosion", false);
 
+		Vector newVelocity = velocity.multiply(fireballVelocity);
+
+		Location newLocation = player.getLineOfSight(null, 2).get(1).getLocation()
+				.setDirection(player.getLocation().getDirection());
+
+		Fireball ball = world.spawn(newLocation, fireball.getClass());
+
 		ball.setIsIncendiary(doesNaturalDamage);
-		ball.setYield(1);
+		ball.setYield(0F);
 		ball.setCustomName("HolyBalls");
 		ball.setMetadata("HolyBalls", new FixedMetadataValue(plugin, "fireball"));
 		ball.setCustomNameVisible(false);
-		Vector velocity = ball.getVelocity();
 
-		velocity.add(velocity);
+		// fireball.setDirection(player.getLocation().getDirection());
+		fireball.setVelocity(newVelocity);
 
-		Vector newVelocity = velocity.multiply(fireballVelocity);
-
-		ball.setVelocity(newVelocity);
 
 		String itemType = config.getString("FireballItem", "FIRE_CHARGE");
 		if (!itemType.equalsIgnoreCase("fire_charge")) {
@@ -207,6 +217,7 @@ public class FireballThrow implements Listener {
 			ball.addPassenger(aStand);
 		}
 
+		return ball;
 	}
 
 }

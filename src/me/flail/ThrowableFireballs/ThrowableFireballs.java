@@ -39,7 +39,6 @@ import me.flail.ThrowableFireballs.Handlers.FireballExplosion;
 import me.flail.ThrowableFireballs.Handlers.FireballItem;
 import me.flail.ThrowableFireballs.Handlers.FireballRecipe;
 import me.flail.ThrowableFireballs.Handlers.FireballThrow;
-import me.flail.ThrowableFireballs.Handlers.FireballVelocity;
 import me.flail.ThrowableFireballs.Handlers.elytra.PlayerHitListener;
 import me.flail.ThrowableFireballs.Tools.TabCompleter;
 import me.flail.ThrowableFireballs.Tools.Tools;
@@ -107,7 +106,6 @@ public class ThrowableFireballs extends JavaPlugin implements CommandExecutor, L
 		manager.registerEvents(new FireballExplosion(), this);
 		manager.registerEvents(new FireballDamage(), this);
 		manager.registerEvents(new FireballThrow(), this);
-		manager.registerEvents(new FireballVelocity(), this);
 		manager.registerEvents(new PlayerHitListener(), this);
 
 	}

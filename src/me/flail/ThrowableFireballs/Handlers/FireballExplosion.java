@@ -18,7 +18,6 @@
 
 package me.flail.ThrowableFireballs.Handlers;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.bukkit.Location;
@@ -36,7 +35,6 @@ import org.bukkit.event.block.BlockExplodeEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import me.flail.ThrowableFireballs.ThrowableFireballs;
@@ -63,64 +61,50 @@ public class FireballExplosion implements Listener {
 
 			if (entity instanceof Fireball) {
 
-				String fbName = entity.getCustomName();
-
-				if ((fbName != null) && (event.getHitBlock() != null) && fbName.equals("HolyBalls")) {
-
-					FileConfiguration config = plugin.getConfig();
-
-					int power = config.getInt("FireballExplosionPower", 0);
-					boolean doesFire = config.getBoolean("FireballSetFire");
-
-					Fireball fireball = (Fireball) entity;
-
-					if (!fireball.hasMetadata("HolyBalls")) {
-						return;
-					}
-
-					plugin.tossed = true;
-
-					Location fbLoc = event.getHitBlock().getLocation();
-					World fbWorld = fireball.getWorld();
-
-					if (power < 1) {
-						fireball.setIsIncendiary(false);
-						fireball.remove();
-
-					} else {
-						fbWorld.createExplosion(fbLoc, power, doesFire);
-
-					}
-
-					for (int i = power * -1; i <= power; i++) {
-						Block block = fbWorld.getBlockAt(fbLoc).getRelative(i, i, i);
-
-						block.setMetadata("Fireballed", new FixedMetadataValue(plugin, power));
-					}
-
-					new Tools().setKnockback(fireball, power * 1.2);
 
 
-					if (!fireball.getPassengers().isEmpty()) {
-						List<Entity> passengers = fireball.getPassengers();
-						if (passengers.get(0) instanceof ArmorStand) {
-							ArmorStand aStand = (ArmorStand) passengers.get(0);
+				FileConfiguration config = plugin.getConfig();
 
-							ItemStack item = aStand.getHelmet();
-							aStand.remove();
+				int power = config.getInt("FireballExplosionPower", 0);
+				boolean doesFire = config.getBoolean("FireballSetFire");
 
-							Item droppedItem = fbWorld.dropItemNaturally(fbLoc, item);
+				Fireball fireball = (Fireball) entity;
 
-							droppedItem.setPickupDelay(Integer.MAX_VALUE);
-							droppedItem.setCustomName(new Tools().chat(config.getString("FireballName", "&6Fireball")));
-							droppedItem.setCustomNameVisible(true);
+				if (!fireball.hasMetadata("HolyBalls")) {
+					return;
+				}
 
-							plugin.server.getScheduler().scheduleSyncDelayedTask(plugin, () -> {
+				plugin.tossed = true;
 
-								droppedItem.remove();
-							}, 69L);
+				Location fbLoc = event.getHitBlock().getLocation();
+				World fbWorld = fireball.getWorld();
 
-						}
+				if (power > 0) {
+					fbWorld.createExplosion(fbLoc, power, doesFire);
+
+				}
+
+				new Tools().setKnockback(fireball, power * 1.2);
+
+
+				if (!fireball.getPassengers().isEmpty()) {
+					List<Entity> passengers = fireball.getPassengers();
+					if (passengers.get(0) instanceof ArmorStand) {
+						ArmorStand aStand = (ArmorStand) passengers.get(0);
+
+						ItemStack item = aStand.getHelmet();
+						aStand.remove();
+
+						Item droppedItem = fbWorld.dropItemNaturally(fbLoc, item);
+
+						droppedItem.setPickupDelay(Integer.MAX_VALUE);
+						droppedItem.setCustomName(new Tools().chat(config.getString("FireballName", "&6Fireball")));
+						droppedItem.setCustomNameVisible(true);
+
+						plugin.server.getScheduler().scheduleSyncDelayedTask(plugin, () -> {
+
+							droppedItem.remove();
+						}, 32L);
 
 					}
 
@@ -137,10 +121,9 @@ public class FireballExplosion implements Listener {
 
 		Entity e = event.getEntity();
 
-		List<Block> newList = new ArrayList<>();
+		if (e.hasMetadata("HolyBalls") || ((e.getCustomName() != null) && e.getCustomName().equals("HolyBalls"))) {
 
-		if ((e != null)) {
-			if (e.hasMetadata("HolyBalls") || ((e.getCustomName() != null) && e.getCustomName().equals("HolyBalls"))) {
+			if (e.hasMetadata("Fireballed")) {
 
 				List<String> immuneBlocks = plugin.getConfig().getStringList("ImmuneBlocks");
 				List<String> immuneKeys = plugin.getConfig().getStringList("ImmuneBlockKeywords");
@@ -150,25 +133,30 @@ public class FireballExplosion implements Listener {
 				}
 
 				for (Block block : event.blockList().toArray(new Block[] {})) {
-					String type = block.getType().toString();
-					if (immuneBlocks.contains(type)) {
-						event.blockList().remove(block);
-					} else {
-						newList.add(block);
-					}
 
-					for (String s : immuneKeys) {
-						if (type.contains(s.toUpperCase())) {
+					if (block.hasMetadata("Fireballed")) {
+						plugin.console.sendMessage("Fireballed Block!");
+
+						String type = block.getType().toString();
+
+						if (immuneBlocks.contains(type)) {
 							event.blockList().remove(block);
-						} else {
-							newList.add(block);
+							continue;
 						}
+
+						for (String s : immuneKeys) {
+							if (type.contains(s.toUpperCase())) {
+								event.blockList().remove(block);
+								break;
+							}
+						}
+
+						continue;
 					}
 
+					event.blockList().clear();
+					break;
 				}
-
-				event.blockList().clear();
-				event.blockList().addAll(newList);
 
 			}
 
@@ -189,30 +177,16 @@ public class FireballExplosion implements Listener {
 
 		for (Block block : event.blockList().toArray(new Block[] {})) {
 
-			if (block.hasMetadata("Fireballed")) {
-				plugin.console.sendMessage("Fireballed Block!");
+			String type = block.getType().toString();
 
-				int power = block.getMetadata("Fireballed").get(0).asInt();
+			if (immuneBlocks.contains(type)) {
+				event.blockList().remove(block);
+			}
 
-				if (power > 0) {
-					String type = block.getType().toString();
-
-					if (immuneBlocks.contains(type)) {
-						event.blockList().remove(block);
-					}
-
-					for (String s : immuneKeys) {
-						if (type.contains(s.toUpperCase())) {
-							event.blockList().remove(block);
-						}
-					}
-
-					block.removeMetadata("Fireballed", plugin);
-					continue;
+			for (String s : immuneKeys) {
+				if (type.contains(s.toUpperCase())) {
+					event.blockList().remove(block);
 				}
-
-				event.setCancelled(true);
-				break;
 			}
 
 		}
