@@ -91,15 +91,10 @@ public class Tools {
 
 			if ((entity instanceof Player)) {
 				Player player = (Player) entity;
-				if (player.isFlying()) {
+				if (player.isFlying()||player.isConversing() || player.isGliding()) {
 					continue;
 				}
-				if (player.isConversing()) {
-					continue;
-				}
-				if (player.isGliding()) {
-					continue;
-				}
+				
 			}
 
 			double distance = (maxHeight - entity.getLocation().distance(target));
