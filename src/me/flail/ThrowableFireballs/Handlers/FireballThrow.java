@@ -185,7 +185,7 @@ public class FireballThrow implements Listener {
 		double fireballVelocity = config.getDouble("FireballSpeed", 1.6);
 		boolean doesNaturalDamage = config.getBoolean("NaturalExplosion", false);
 
-		Vector newVelocity = velocity.multiply(fireballVelocity);
+		Vector newVelocity = velocity.add(new Vector(0.1, 0.1, 0.1)).multiply(fireballVelocity);
 
 		Location newLocation = player.getLineOfSight(null, 2).get(1).getLocation()
 				.setDirection(player.getLocation().getDirection());
