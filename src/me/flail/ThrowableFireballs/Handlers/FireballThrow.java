@@ -178,7 +178,6 @@ public class FireballThrow implements Listener {
 		fireball.setYield(0F);
 		World world = fireball.getWorld();
 		Vector velocity = fireball.getVelocity();
-		fireball.remove();
 
 		config = plugin.getConfig();
 
@@ -187,16 +186,22 @@ public class FireballThrow implements Listener {
 
 		Vector newVelocity = velocity.add(new Vector(0.1, 0.1, 0.1)).multiply(fireballVelocity);
 
-		Location newLocation = player.getLineOfSight(null, 2).get(1).getLocation()
-				.setDirection(player.getLocation().getDirection());
 
-		Fireball ball = world.spawn(newLocation, fireball.getClass());
 
-		ball.setIsIncendiary(doesNaturalDamage);
-		ball.setYield(0F);
-		ball.setCustomName("HolyBalls");
-		ball.setMetadata("HolyBalls", new FixedMetadataValue(plugin, "fireball"));
-		ball.setCustomNameVisible(false);
+		if (config.getInt("LaunchPosition", 0) > 0) {
+			fireball.remove();
+
+			Location newLocation = player.getLineOfSight(null, 2).get(1).getLocation()
+					.setDirection(player.getLocation().getDirection());
+
+			fireball = world.spawn(newLocation, fireball.getClass());
+		}
+
+		fireball.setIsIncendiary(doesNaturalDamage);
+		fireball.setYield(0F);
+		fireball.setCustomName("HolyBalls");
+		fireball.setMetadata("HolyBalls", new FixedMetadataValue(plugin, "fireball"));
+		fireball.setCustomNameVisible(false);
 
 		// fireball.setDirection(player.getLocation().getDirection());
 		fireball.setVelocity(newVelocity);
@@ -204,7 +209,7 @@ public class FireballThrow implements Listener {
 
 		String itemType = config.getString("FireballItem", "FIRE_CHARGE");
 		if (!itemType.equalsIgnoreCase("fire_charge")) {
-			ArmorStand aStand = (ArmorStand) ball.getWorld().spawnEntity(ball.getLocation(), EntityType.ARMOR_STAND);
+			ArmorStand aStand = (ArmorStand) fireball.getWorld().spawnEntity(fireball.getLocation(), EntityType.ARMOR_STAND);
 
 			aStand.setGravity(false);
 			aStand.setBasePlate(false);
@@ -214,10 +219,10 @@ public class FireballThrow implements Listener {
 
 			aStand.setRemoveWhenFarAway(true);
 
-			ball.addPassenger(aStand);
+			fireball.addPassenger(aStand);
 		}
 
-		return ball;
+		return fireball;
 	}
 
 }
