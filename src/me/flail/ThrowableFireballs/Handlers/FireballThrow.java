@@ -215,7 +215,7 @@ public class FireballThrow implements Listener {
 			aStand.setBasePlate(false);
 			aStand.setInvulnerable(true);
 			aStand.setVisible(false);
-			aStand.setHelmet(new ItemStack(Material.matchMaterial(itemType)));
+			aStand.getEquipment().setHelmet(new ItemStack(Material.matchMaterial(itemType)));
 
 			aStand.setRemoveWhenFarAway(true);
 

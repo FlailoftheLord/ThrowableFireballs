@@ -48,6 +48,9 @@ public class FireballExplosion implements Listener {
 
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void fireballExplode(ProjectileHitEvent event) {
+		if (event.getHitBlock() == null) {
+			return;
+		}
 
 		plugin = JavaPlugin.getPlugin(ThrowableFireballs.class);
 
@@ -92,7 +95,7 @@ public class FireballExplosion implements Listener {
 					if (passengers.get(0) instanceof ArmorStand) {
 						ArmorStand aStand = (ArmorStand) passengers.get(0);
 
-						ItemStack item = aStand.getHelmet();
+						ItemStack item = aStand.getEquipment().getHelmet();
 						aStand.remove();
 
 						Item droppedItem = fbWorld.dropItemNaturally(fbLoc, item);
