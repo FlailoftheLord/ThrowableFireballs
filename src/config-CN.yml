@@ -1,0 +1,127 @@
+#-----------------------------------------------------------------
+#==================================================================#
+#                                                                  #
+#                插件作者 FlailoftheLord.                          #
+#        -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-                   #
+#     有问题请联系作者的discord  FlailoftheLord#6842               #
+#                 汉化by 冰之睿 & Fur_Xia                          #
+#   ______               __        _____                           #
+#   |       |           /  \         |        |                    #
+#   |__     |          /____\        |        |                    #
+#   |       |         /      \       |        |                    #
+#   |       |_____   /        \    __|__      |______              #
+#                                                                  #
+#==================================================================#
+#-----------------------------------------------------------------
+
+# 火焰弹是否会进行自然的爆炸。
+# 注意：可能无法消除对环境的破坏[可以使用Coreprotect辅助以恢复]。
+# 如果设置为true，则以下值将被忽略。
+# 如果设置为false，则插件将使用以下爆炸设置
+# 用于创建爆炸。
+NaturalExplosion: false
+
+# 设置撞击时火焰弹的爆炸力，将其设置为0以禁用
+FireballExplosionPower: 3
+# 免疫爆炸的方块
+ImmuneBlocks:
+- "Chest"
+- "trapped_chest"
+- "ender_chest"
+
+# 这意味着任何名称中包含单词“stone”的方块都不会被炸毁.
+ImmuneBlockKeywords:
+- "stone"
+
+# 设置火焰弹对实体或玩家造成的伤害量。
+# 1 = 一颗心
+FireballDamage: 3.5
+
+# 设置火焰弹是否在撞击产生火焰[可能有歧义]
+FireballSetFire: true
+
+# 大于0的任何数字将使用不同的机制来发射火焰弹，以防止它有时在您的头部爆炸。
+LaunchPosition: 0
+
+# 是否可以从副手投掷火焰弹
+AllowOffhandThrowing: true
+
+# 是否应该允许玩家使用常规的火焰弹
+UseFirecharge: false
+
+# 设置可以使用火焰弹跳跃的高度上限
+MaxJumpHeight: 8
+
+# 禁止投掷火焰弹的世界
+NoThrowZones:
+- "world_the_end"
+- "creative_world"
+
+# 如果世界在'NoThrowZone'列表中，那么向玩家发送的消息
+NoThrowZoneMessage: "%prefix% &c您不允许在这个世界上扔火焰弹！"
+
+# 插件信息前缀
+# 只需在信息中加入占位符 ％prefix％，它将被该前缀替换。
+Prefix: "&8(&6Fireballs&8)"
+
+ReloadMessage: |-
+    %prefix% &a配置文件已重新加载,
+     &a如果你需要更改火焰弹配方，请重启服务器!
+
+# 如果没有权限，发送给玩家的消息
+NoPermissionMessage: "%prefix% &c你没有权限投掷火焰弹"
+
+# 是否向玩家显示冷却消息
+CooldownMessageEnabled: true
+
+# 当'CooldownMessageEnabled'设置为true时，此消息将发送给玩家
+# 使用占位符 %cooldown% 将会被替换为冷却剩余的秒数
+CooldownMessage: "%prefix% &c你必须等待 %cooldown% 秒后才能发射火焰弹"
+
+# 两次使用之间的间隔（以秒为单位）设置为0以禁用
+Cooldown: 1
+
+# 不想让它看起来像火焰弹枪吗？
+# 更改火焰弹的类型。
+FireballItem: "fire_charge"
+
+# 火焰弹的自定义显示名称
+FireballName: "&6火焰弹"
+
+# 这里是火焰弹显示的lore ...
+# 可以更具需要进行修改!! :)
+Lore:
+- "&7右击以丢出"
+- "&7grief extreme ;)"
+
+# - - -
+# 这是火焰弹的制作配方！
+# 将AmountGiven设置为任意数字，以设置制作时所给物品的数量。
+# 每一行在制作表格中为一行（3 x 3）
+# 将字母更改为'A'和'I'之间的任何字母，然后定义每种材料类型
+# 字母代表下面的材料部分
+# 您可以在此处获得项目名称的完整列表：
+# https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Material.html
+# - - -
+# 如果其中一项无效，该插件将在控制台中向您发出警告。
+CraftingRecipe:
+  AmountGiven: 3
+  Pattern:
+      1: "ABA"
+      2: "BCB"
+      3: "ABA"
+  Materials:
+      A: "GUNPOWDER"
+      B: "FIREWORK_STAR"
+      C: "GHAST_TEAR"
+      D: ""
+      E: ""
+      F: ""
+      G: ""
+      H: ""
+      I: ""
+      
+      
+      
+      
+      
