@@ -1,19 +1,15 @@
 /*
- *  Copyright (C) 2018-2019 FlailoftheLord
- *
- *  This program is free software: you can redistribute it and/or modify
- *    it under the terms of the GNU General Public License as published by
- *   the Free Software Foundation, either version 3 of the License, or
- *   (at your option) any later version.
- *
- *   This program is distributed in the hope that it will be useful,
- *   but WITHOUT ANY WARRANTY; without even the implied warranty of
- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *   GNU General Public License for more details.
- *
- *   You should have received a copy of the GNU General Public License
- *   along with this program.  If not, see <https://www.gnu.org/licenses/>.
- *
+ * Copyright (C) 2018 FlailoftheLord
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
 package me.flail.ThrowableFireballs.Tools;
@@ -38,11 +34,10 @@ public class Tools {
 
 	private FileConfiguration config = plugin.getConfig();
 
+	String prefix = config.getString("Prefix");
+	String version = plugin.getDescription().getVersion();
+
 	public String chat(String s) {
-
-		String prefix = config.getString("Prefix");
-
-		String version = plugin.getDescription().getVersion();
 
 		String result = "";
 
@@ -57,6 +52,10 @@ public class Tools {
 					ChatColor.RED + "ERROR with chat formatting! Send the above error to the plugin's author.");
 		}
 		return result;
+	}
+
+	public void console(String msg) {
+		plugin.console.sendMessage(chat("&7[ThrowableFireballs] " + msg));
 	}
 
 	/**
@@ -94,7 +93,7 @@ public class Tools {
 				if (player.isFlying()||player.isConversing() || player.isGliding()) {
 					continue;
 				}
-				
+
 			}
 
 			double distance = (maxHeight - entity.getLocation().distance(target));

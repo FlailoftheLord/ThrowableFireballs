@@ -22,7 +22,7 @@
 NaturalExplosion: false
 
 # Set the Explosion Power of the Fireball on impact, set it to 0 to disable
-FireballExplosionPower: 3
+FireballExplosionPower: 2
 
 ImmuneBlocks:
 - "Chest"

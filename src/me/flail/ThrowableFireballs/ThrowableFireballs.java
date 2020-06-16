@@ -1,19 +1,15 @@
 /*
- *  Copyright (C) 2018-2019 FlailoftheLord
- *
- *  This program is free software: you can redistribute it and/or modify
- *    it under the terms of the GNU General Public License as published by
- *   the Free Software Foundation, either version 3 of the License, or
- *   (at your option) any later version.
- *
- *   This program is distributed in the hope that it will be useful,
- *   but WITHOUT ANY WARRANTY; without even the implied warranty of
- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *   GNU General Public License for more details.
- *
- *   You should have received a copy of the GNU General Public License
- *   along with this program.  If not, see <https://www.gnu.org/licenses/>.
- *
+ * Copyright (C) 2018 FlailoftheLord
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
 package me.flail.ThrowableFireballs;
@@ -23,7 +19,6 @@ import java.util.List;
 import org.bukkit.Bukkit;
 import org.bukkit.Server;
 import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -39,14 +34,17 @@ import me.flail.ThrowableFireballs.Handlers.FireballExplosion;
 import me.flail.ThrowableFireballs.Handlers.FireballItem;
 import me.flail.ThrowableFireballs.Handlers.FireballRecipe;
 import me.flail.ThrowableFireballs.Handlers.FireballThrow;
+import me.flail.ThrowableFireballs.Handlers.WorldGuardHandle;
 import me.flail.ThrowableFireballs.Handlers.elytra.PlayerHitListener;
 import me.flail.ThrowableFireballs.Tools.TabCompleter;
 import me.flail.ThrowableFireballs.Tools.Tools;
 
-public class ThrowableFireballs extends JavaPlugin implements CommandExecutor, Listener {
+public class ThrowableFireballs extends JavaPlugin implements Listener {
 
 	public ConsoleCommandSender console = Bukkit.getConsoleSender();
 	public boolean tossed = false;
+	public boolean isWorldGuard = false;
+	public WorldGuardHandle worldguard;
 
 	private String version;
 
@@ -56,6 +54,7 @@ public class ThrowableFireballs extends JavaPlugin implements CommandExecutor, L
 	@Override
 	public void onEnable() {
 		Tools tools = new Tools();
+		PluginManager m = server.getPluginManager();
 
 		// Save config files
 		saveDefaultConfig();
@@ -69,11 +68,22 @@ public class ThrowableFireballs extends JavaPlugin implements CommandExecutor, L
 
 		// Friendly console spam ;)
 		version = getDescription().getVersion();
-		console.sendMessage(" ");
-		console.sendMessage(tools.chat("&6ThrowableFireballs &7v" + version));
-		console.sendMessage(tools.chat("&2  by FlailoftheLord"));
-		console.sendMessage(tools.chat("&6 Grief Extreme!?!?"));
-		console.sendMessage(" ");
+		tools.console(" ");
+		tools.console("&6ThrowableFireballs &7v" + version);
+		tools.console("&2  by FlailoftheLord");
+		tools.console("&6 Grief Extreme!?!?");
+		tools.console(" ");
+		if (m.getPlugin("WorldGuard") != null) {
+			isWorldGuard = true;
+
+			tools.console("&6WorldGuard found, registering region flags...");
+		}
+
+		if (isWorldGuard) {
+			worldguard = new WorldGuardHandle();
+
+			worldguard.registerFlags();
+		}
 
 	}
 
@@ -82,7 +92,7 @@ public class ThrowableFireballs extends JavaPlugin implements CommandExecutor, L
 		Tools tools = new Tools();
 
 		scheduler.cancelTasks(this);
-		console.sendMessage(tools.chat("&6&lFarewell!"));
+		tools.console("&6&lFarewell!");
 	}
 
 	@Override
@@ -132,7 +142,7 @@ public class ThrowableFireballs extends JavaPlugin implements CommandExecutor, L
 
 			server.addRecipe(recipes.fireballRecipe());
 
-			console.sendMessage(tools.chat("&eFireball Recipe has been updated!"));
+			tools.console(("&eFireball Recipe has been updated!"));
 
 		} else {
 

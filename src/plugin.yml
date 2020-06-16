@@ -1,9 +1,13 @@
 name: ThrowableFireballs
 main: me.flail.ThrowableFireballs.ThrowableFireballs
-version: 1.7.9
+version: 1.7.10
 author: FlailoftheLord
 description: Throw Fireballs, like a Ghast!
 api-version: 1.15
+
+# dependencies shits
+softdepend: [WorldEdit]
+loadbefore: [WorldGuard]
 
 commands:
     throwablefireballs:
@@ -16,16 +20,16 @@ commands:
       
 permissions:
   fireballs.infinite:
-    description: don't ever run outta them!
+    description: won't ever run outta fireballs.
     default: op
   fireballs.op:
-    description: use administrative commands
+    description: use commands
     default: op
   fireballs.throw:
     description: throw ballz ;D
     default: true
   fireballs.commandthrow:
-    description: throw balz using commansz
+    description: throw ballz using commands
     default: op
   fireballs.bypass:
     description: bypass the cooldown

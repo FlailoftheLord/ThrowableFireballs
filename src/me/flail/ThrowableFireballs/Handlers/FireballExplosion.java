@@ -1,19 +1,15 @@
 /*
- *  Copyright (C) 2018-2019 FlailoftheLord
- *
- *  This program is free software: you can redistribute it and/or modify
- *    it under the terms of the GNU General Public License as published by
- *   the Free Software Foundation, either version 3 of the License, or
- *   (at your option) any later version.
- *
- *   This program is distributed in the hope that it will be useful,
- *   but WITHOUT ANY WARRANTY; without even the implied warranty of
- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *   GNU General Public License for more details.
- *
- *   You should have received a copy of the GNU General Public License
- *   along with this program.  If not, see <https://www.gnu.org/licenses/>.
- *
+ * Copyright (C) 2018 FlailoftheLord
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
 package me.flail.ThrowableFireballs.Handlers;
@@ -58,13 +54,11 @@ public class FireballExplosion implements Listener {
 
 		Entity entity = event.getEntity();
 
-		boolean doesNaturalDamage = config.getBoolean("NaturalExplosion", true);
+		if (entity instanceof Fireball) {
 
-		if (!doesNaturalDamage) {
+			boolean doesNaturalDamage = config.getBoolean("NaturalExplosion", true);
 
-			if (entity instanceof Fireball) {
-
-
+			if (!doesNaturalDamage) {
 
 				FileConfiguration config = plugin.getConfig();
 
@@ -74,6 +68,14 @@ public class FireballExplosion implements Listener {
 				Fireball fireball = (Fireball) entity;
 
 				if (!fireball.hasMetadata("HolyBalls")) {
+					return;
+				}
+
+				new Tools().setKnockback(fireball, power * 1.4);
+
+				if (plugin.isWorldGuard && !plugin.worldguard.canDamageBlock(event.getHitBlock().getLocation())) {
+					fireball.setIsIncendiary(false);
+					fireball.setYield(0);
 					return;
 				}
 
@@ -87,7 +89,7 @@ public class FireballExplosion implements Listener {
 
 				}
 
-				new Tools().setKnockback(fireball, power * 1.2);
+
 
 
 				if (!fireball.getPassengers().isEmpty()) {
