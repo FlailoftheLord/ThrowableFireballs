@@ -139,16 +139,10 @@ public class ThrowableFireballs extends JavaPlugin implements Listener {
 		if (fbR != null) {
 
 			fbR.clear();
-
-			server.addRecipe(recipes.fireballRecipe());
-
 			tools.console(("&eFireball Recipe has been updated!"));
-
-		} else {
-
-			server.addRecipe(recipes.fireballRecipe());
-
 		}
+
+		server.addRecipe(recipes.fireballRecipe());
 
 	}
 
