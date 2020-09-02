@@ -33,8 +33,9 @@ public class WorldGuardHandle extends Tools {
 	public static final StateFlag FIREBALL_DAMAGE = new StateFlag("fireballs-entity-damage", true);
 
 	public boolean registerFlags() {
-		FlagRegistry flags = wg.getFlagRegistry();
 		try {
+			FlagRegistry flags = wg.getFlagRegistry();
+
 			flags.register(FIREBALL_EXPLOSION);
 			console("Registered custom WorldGuard flag  &eFIREBALLS-BLOCK-DAMAGE");
 			flags.register(FIREBALL_DAMAGE);
