@@ -1,6 +1,6 @@
 name: ThrowableFireballs
 main: me.flail.ThrowableFireballs.ThrowableFireballs
-version: 1.8.1
+version: 1.8.2
 author: FlailoftheLord
 description: Throw Fireballs, like a Ghast!
 api-version: 1.16
@@ -33,6 +33,9 @@ permissions:
   fireballs.bypass:
     description: bypass the cooldown
     default: op
+  fireballs.craft:
+    description: craft fireballs
+    default: true
       
  # Permissions
  #   fireballs.op
