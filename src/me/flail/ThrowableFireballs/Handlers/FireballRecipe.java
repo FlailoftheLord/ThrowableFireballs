@@ -34,6 +34,11 @@ public class FireballRecipe {
 
 	private Tools tools = new Tools();
 
+	public NamespacedKey getNamespace() {
+
+		return new NamespacedKey(plugin, "ThrowableFireball");
+	}
+
 	public Recipe fireballRecipe() {
 
 		FileConfiguration config = plugin.getConfig();
@@ -60,7 +65,7 @@ public class FireballRecipe {
 
 		fireball.setAmount(yield);
 
-		ShapedRecipe fbRecipe = new ShapedRecipe(new NamespacedKey(plugin, "ThrowableFireball"), fireball);
+		ShapedRecipe fbRecipe = new ShapedRecipe(getNamespace(), fireball);
 
 		fbRecipe.shape(line1, line2, line3);
 

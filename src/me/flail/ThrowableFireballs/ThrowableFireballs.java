@@ -22,13 +22,17 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.Recipe;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitScheduler;
 
+import me.flail.ThrowableFireballs.Handlers.FireballCraft;
 import me.flail.ThrowableFireballs.Handlers.FireballDamage;
 import me.flail.ThrowableFireballs.Handlers.FireballExplosion;
 import me.flail.ThrowableFireballs.Handlers.FireballItem;
@@ -95,6 +99,19 @@ public class ThrowableFireballs extends JavaPlugin implements Listener {
 		tools.console("&6&lFarewell!");
 	}
 
+	@EventHandler
+	public void onJoin(PlayerJoinEvent event) {
+		Player plyer = event.getPlayer();
+		if (plyer.hasPermission("fireballs.craft")) {
+			if (!plyer.hasDiscoveredRecipe(new FireballRecipe().getNamespace())) {
+				plyer.discoverRecipe(new FireballRecipe().getNamespace());
+			}
+			return;
+		}
+
+		plyer.undiscoverRecipe(new FireballRecipe().getNamespace());
+	}
+
 	@Override
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 		return new Commands(sender, command, label, args).run();
@@ -117,6 +134,8 @@ public class ThrowableFireballs extends JavaPlugin implements Listener {
 		manager.registerEvents(new FireballDamage(), this);
 		manager.registerEvents(new FireballThrow(), this);
 		manager.registerEvents(new PlayerHitListener(), this);
+		manager.registerEvents(new FireballCraft(), this);
+		manager.registerEvents(this, this);
 
 	}
 

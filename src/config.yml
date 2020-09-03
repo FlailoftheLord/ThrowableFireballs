@@ -60,7 +60,7 @@ NoThrowZones:
 NoThrowZoneMessage: "%prefix% &cYou're not allowed to throw fireballs in this world!"
 
 #Plugin prefix for messages
-# simply put the placeholder  %prefix% in the message, and it will be replaced by this prefix.
+# simply put the placeholder %prefix% in the message, and it will be replaced by this prefix.
 Prefix: "&8(&6Fireballs&8)"
 
 ReloadMessage: |- 
@@ -69,6 +69,9 @@ ReloadMessage: |-
 
 #Message to send to player if no permissions
 NoPermissionMessage: "%prefix% &cYou do not have permission to use this"
+
+#Sent when the player doesn't have the permission "fireballs.craft"
+NoCraftPermission: "%prefix% &cYou don't have permission to craft this."
 
 # Whether to show cooldown Messages to player or not
 CooldownMessageEnabled: true

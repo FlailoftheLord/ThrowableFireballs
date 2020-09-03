@@ -30,7 +30,7 @@ import me.flail.ThrowableFireballs.ThrowableFireballs;
 
 public class Tools {
 
-	private ThrowableFireballs plugin = ThrowableFireballs.getPlugin(ThrowableFireballs.class);
+	protected ThrowableFireballs plugin = ThrowableFireballs.getPlugin(ThrowableFireballs.class);
 
 	private FileConfiguration config = plugin.getConfig();
 
