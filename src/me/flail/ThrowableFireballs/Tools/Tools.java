@@ -16,6 +16,8 @@ package me.flail.ThrowableFireballs.Tools;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -29,6 +31,7 @@ import org.bukkit.util.Vector;
 import me.flail.ThrowableFireballs.ThrowableFireballs;
 
 public class Tools {
+	private static final char COLOR_CHAR = ChatColor.COLOR_CHAR;
 
 	protected ThrowableFireballs plugin = ThrowableFireballs.getPlugin(ThrowableFireballs.class);
 
@@ -51,7 +54,21 @@ public class Tools {
 			Bukkit.getConsoleSender().sendMessage(
 					ChatColor.RED + "ERROR with chat formatting! Send the above error to the plugin's author.");
 		}
-		return result;
+		return translateHex("&#", "", result);
+	}
+
+	public String translateHex(String startTag, String endTag, String message) {
+		final Pattern hexPattern = Pattern.compile(startTag + "([A-Fa-f0-9]{6})" + endTag);
+		Matcher matcher = hexPattern.matcher(message);
+		StringBuffer buffer = new StringBuffer(message.length() + (4 * 8));
+		while (matcher.find()) {
+			String group = matcher.group(1);
+			matcher.appendReplacement(buffer, COLOR_CHAR + "x"
+					+ COLOR_CHAR + group.charAt(0) + COLOR_CHAR + group.charAt(1)
+					+ COLOR_CHAR + group.charAt(2) + COLOR_CHAR + group.charAt(3)
+					+ COLOR_CHAR + group.charAt(4) + COLOR_CHAR + group.charAt(5));
+		}
+		return matcher.appendTail(buffer).toString();
 	}
 
 	public void console(String msg) {
@@ -62,8 +79,10 @@ public class Tools {
 	 * Knocks all entities within the target radius backwards as naturally as
 	 * possible.
 	 *
-	 * @param center the target entity at the center of the fireball hit.
-	 * @param radius at which to check for entities.
+	 * @param center
+	 *                   the target entity at the center of the fireball hit.
+	 * @param radius
+	 *                   at which to check for entities.
 	 * @return false if there are no entities nearby, true otherwise.
 	 */
 	public boolean setKnockback(Entity center, double radius) {
@@ -90,7 +109,7 @@ public class Tools {
 
 			if ((entity instanceof Player)) {
 				Player player = (Player) entity;
-				if (player.isFlying()||player.isConversing() || player.isGliding()) {
+				if (player.isConversing() || player.isGliding()) {
 					continue;
 				}
 
