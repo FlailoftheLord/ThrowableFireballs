@@ -79,18 +79,12 @@ public class FireballExplosion implements Listener {
 					return;
 				}
 
-				plugin.tossed = true;
-
 				Location fbLoc = event.getHitBlock().getLocation();
 				World fbWorld = fireball.getWorld();
 
 				if (power > 0) {
-					fbWorld.createExplosion(fbLoc, power, doesFire);
-
+					fbWorld.createExplosion(fbLoc, power, doesFire, true, fireball);
 				}
-
-
-
 
 				if (!fireball.getPassengers().isEmpty()) {
 					List<Entity> passengers = fireball.getPassengers();
@@ -168,7 +162,6 @@ public class FireballExplosion implements Listener {
 		}
 
 	}
-
 
 	@EventHandler
 	public void blockBoom(BlockExplodeEvent event) {

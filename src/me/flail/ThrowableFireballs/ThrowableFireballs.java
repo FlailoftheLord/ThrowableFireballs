@@ -46,7 +46,6 @@ import me.flail.ThrowableFireballs.Tools.Tools;
 public class ThrowableFireballs extends JavaPlugin implements Listener {
 
 	public ConsoleCommandSender console = Bukkit.getConsoleSender();
-	public boolean tossed = false;
 	public boolean isWorldGuard = false;
 	public WorldGuardHandle worldguard;
 

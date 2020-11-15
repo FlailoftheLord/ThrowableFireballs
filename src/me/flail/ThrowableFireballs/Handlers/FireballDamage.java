@@ -28,18 +28,18 @@ public class FireballDamage implements Listener {
 
 	private ThrowableFireballs plugin = ThrowableFireballs.getPlugin(ThrowableFireballs.class);
 
-	@EventHandler(priority = EventPriority.HIGH)
-	public void onFireballDamage(EntityDamageByEntityEvent event) {
+	@EventHandler(priority = EventPriority.HIGHEST)
+	public void onFireballDamage(EntityDamageByEntityEvent e) {
+		e.setDamage(fireballDamage(e.getEntity(), e.getDamager(), e.getCause(), e.getDamage()));
+	}
+
+	public double fireballDamage(Entity damaged, Entity damager, DamageCause cause, double baseDamage) {
 
 		FileConfiguration config = plugin.getConfig();
-		Entity damager = event.getDamager();
-		Entity damaged = event.getEntity();
 
 		boolean doesNaturalDamage = config.getBoolean("NaturalExplosion");
 
-		if (doesNaturalDamage != true) {
-
-			DamageCause cause = event.getCause();
+		if (!doesNaturalDamage) {
 
 			if (cause.equals(DamageCause.BLOCK_EXPLOSION) || cause.equals(DamageCause.ENTITY_EXPLOSION)
 					|| cause.equals(DamageCause.PROJECTILE)) {
@@ -50,14 +50,13 @@ public class FireballDamage implements Listener {
 					if (plugin.isWorldGuard) {
 						if (!plugin.worldguard.canDamageEntity(damaged.getLocation())) {
 
-							event.setCancelled(true);
-							return;
+							return 0;
 						}
 					}
 
-					double damage = config.getDouble("FireballDamage") * 2;
+					double damage = config.getDouble("FireballDamage", 2.0);
 
-					event.setDamage(damage);
+					return damage;
 
 				}
 
@@ -65,6 +64,7 @@ public class FireballDamage implements Listener {
 
 		}
 
+		return baseDamage;
 	}
 
 }
