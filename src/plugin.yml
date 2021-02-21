@@ -1,12 +1,12 @@
 name: ThrowableFireballs
-main: me.flail.ThrowableFireballs.ThrowableFireballs
-version: 1.8.5
+main: me.flail.throwablefireballs.ThrowableFireballs
+version: 1.8.7
 author: FlailoftheLord
 description: Throw Fireballs, like a Ghast!
 api-version: 1.16
 
 # dependencies shits
-loadbefore: [WorldGuard]
+softdepend: [WorldGuard]
 
 commands:
     throwablefireballs:
@@ -20,7 +20,7 @@ commands:
 permissions:
   fireballs.infinite:
     description: won't ever run outta fireballs.
-    default: op
+    default: false
   fireballs.op:
     description: use commands
     default: op
@@ -32,7 +32,7 @@ permissions:
     default: op
   fireballs.bypass:
     description: bypass the cooldown
-    default: op
+    default: false
   fireballs.craft:
     description: craft fireballs
     default: true

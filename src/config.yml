@@ -24,9 +24,8 @@ NaturalExplosion: false
 FireballExplosionPower: 2
 
 ImmuneBlocks:
-- "Chest"
+- "chest"
 - "trapped_chest"
-- "ender_chest"
 
 # This means that any block containing the word 'stone' in its' name will not be blown up.
 ImmuneBlockKeywords:
