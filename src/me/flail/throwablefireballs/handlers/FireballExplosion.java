@@ -45,7 +45,7 @@ public class FireballExplosion extends Tools implements Listener {
 
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void fireballExplode(ProjectileHitEvent event) {
-		console("Projectile hit");
+		// console("Projectile hit");
 		if (Objects.isNull(event.getHitBlock()))
 			return;
 
@@ -84,7 +84,7 @@ public class FireballExplosion extends Tools implements Listener {
 				if (power > 0) {
 					fbWorld.createExplosion(fbLoc, power, doesFire, true, fireball);
 
-					console("Explosion created");
+					// console("Explosion created");
 				}
 
 				if (!fireball.getPassengers().isEmpty()) {

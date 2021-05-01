@@ -17,6 +17,7 @@ package me.flail.throwablefireballs;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Server;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -31,6 +32,8 @@ import org.bukkit.inventory.Recipe;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitScheduler;
+
+import com.sk89q.worldguard.WorldGuard;
 
 import me.flail.throwablefireballs.handlers.FireballCraft;
 import me.flail.throwablefireballs.handlers.FireballDamage;
@@ -49,28 +52,36 @@ public class ThrowableFireballs extends JavaPlugin implements Listener {
 	public boolean isWorldGuard;
 	public WorldGuardHandle worldguard;
 	public FileConfiguration conf;
+	Tools tools;
 
 	public final List<String> immuneBlocks = new ArrayList<>();
 	public final List<String> immuneBlockKeys = new ArrayList<>();
 
 	public Server server;
 	public BukkitScheduler scheduler;
+	public PluginManager m;
+
+	String WORLD_GUARD = "WorldGuard";
+	public WorldGuard wg = null;
+	int wgregisterattempts = 0;
 
 	@Override
 	public void onLoad() {
+		tools = new Tools();
+
 		server = getServer();
 		scheduler = server.getScheduler();
 		console = server.getConsoleSender();
+		m = server.getPluginManager();
 
 		// Update config file
 		saveDefaultConfig();
 		conf = getConfig();
+
 	}
 
 	@Override
 	public void onEnable() {
-		Tools tools = new Tools();
-		PluginManager m = server.getPluginManager();
 
 		immuneBlocks.addAll(conf.getStringList("ImmuneBlocks"));
 		immuneBlockKeys.addAll(conf.getStringList("ImmuneBlockKeys"));
@@ -89,23 +100,17 @@ public class ThrowableFireballs extends JavaPlugin implements Listener {
 		tools.console("&2  by FlailoftheLord");
 		tools.console("&6 Grief Extreme!?!?");
 		tools.console(" ");
-		if (m.getPlugin("WorldGuard") != null) {
-			isWorldGuard = true;
 
+		if (m.getPlugin(WORLD_GUARD) != null) {// m.getPlugin(WORLD_GUARD).isEnabled())
 			tools.console("&6WorldGuard found, registering region flags...");
-		}
 
-		if (isWorldGuard) {
-			worldguard = new WorldGuardHandle();
-
-			worldguard.registerFlags();
+			initiateWorldGuard();
 		}
 
 	}
 
 	@Override
 	public void onDisable() {
-		Tools tools = new Tools();
 
 		scheduler.cancelTasks(this);
 		tools.console("&6Farewell!");
@@ -134,6 +139,32 @@ public class ThrowableFireballs extends JavaPlugin implements Listener {
 		return new TabCompleter(command).construct(args);
 	}
 
+	void initiateWorldGuard() {
+		wg = WorldGuard.getInstance();
+		if (wg != null) {
+
+			worldguard = new WorldGuardHandle();
+			boolean loaded = worldguard.registerFlags();
+			if (!loaded)
+				reInitWg();
+
+		} else
+			reInitWg();
+
+	}
+
+	void reInitWg() {
+		if (wgregisterattempts > 5) {
+			tools.console("&7WorldGuard flag registry failed.");
+			return;
+		}
+		wgregisterattempts += 1;
+		Bukkit.getScheduler().scheduleSyncDelayedTask(this, () -> {
+			initiateWorldGuard();
+		}, 100L);
+
+	}
+
 	private void registerCommands() {
 		for (String string : getDescription().getCommands().keySet()) {
 			this.getCommand(string).setExecutor(this);
@@ -152,8 +183,6 @@ public class ThrowableFireballs extends JavaPlugin implements Listener {
 	}
 
 	public void registerRecipes() {
-
-		Tools tools = new Tools();
 
 		FileConfiguration config = getConfig();
 

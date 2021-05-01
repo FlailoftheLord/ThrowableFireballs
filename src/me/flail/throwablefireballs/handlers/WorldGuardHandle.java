@@ -20,21 +20,21 @@ import com.sk89q.worldedit.bukkit.BukkitAdapter;
 import com.sk89q.worldguard.WorldGuard;
 import com.sk89q.worldguard.protection.ApplicableRegionSet;
 import com.sk89q.worldguard.protection.flags.StateFlag;
-import com.sk89q.worldguard.protection.flags.registry.FlagRegistry;
+import com.sk89q.worldguard.protection.flags.registry.SimpleFlagRegistry;
 import com.sk89q.worldguard.protection.regions.RegionQuery;
 
 import me.flail.throwablefireballs.tools.Tools;
 
 public class WorldGuardHandle extends Tools {
 
-	WorldGuard wg = WorldGuard.getInstance();
-
 	public static final StateFlag FIREBALL_EXPLOSION = new StateFlag("fireballs-block-damage", true);
 	public static final StateFlag FIREBALL_DAMAGE = new StateFlag("fireballs-entity-damage", true);
 
 	public boolean registerFlags() {
 		try {
-			FlagRegistry flags = wg.getFlagRegistry();
+
+			SimpleFlagRegistry flags = (SimpleFlagRegistry) plugin.wg.getFlagRegistry();
+			flags.setInitialized(false);
 
 			flags.register(FIREBALL_EXPLOSION);
 			console("Registered custom WorldGuard flag  &eFIREBALLS-BLOCK-DAMAGE");
@@ -44,8 +44,10 @@ public class WorldGuardHandle extends Tools {
 
 			return true;
 		} catch (Exception e) {
-			e.printStackTrace();
-			console("&cERROR while registering flags to WorldGuard.");
+			// e.printStackTrace();
+			console("&cError occured while registering flags to WorldGuard.");
+			console("&cThis is most likely due to WorldGuard not loading in time.");
+			console("&7Trying again in 5 seconds...");
 			return false;
 		}
 
@@ -60,6 +62,7 @@ public class WorldGuardHandle extends Tools {
 	}
 
 	protected boolean check(Location location, StateFlag flag) {
+		WorldGuard wg = WorldGuard.getInstance();
 		RegionQuery query = wg.getPlatform().getRegionContainer().createQuery();
 		ApplicableRegionSet set = query.getApplicableRegions(BukkitAdapter.adapt(location));
 
