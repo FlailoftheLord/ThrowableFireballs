@@ -61,7 +61,6 @@ public class Commands extends Tools {
 			return true;
 		} else if (command.getName().equals("throwablefireballs")) {
 
-			String reloadMessage = chat(config.getString("ReloadMessage"));
 			String noPermission = chat(config.getString("NoPermissionMessage"));
 			String defaultMsg = chat("%prefix% &6&lThrowableFireballs &7version &e%version%  &2by FlailoftheLord.");
 			String versionInfo = chat("&7Running on " + plugin.server.getName() + " version " + plugin.server.getVersion());
@@ -83,8 +82,8 @@ public class Commands extends Tools {
 				switch (arg) {
 				case "reload":
 					if (sender.hasPermission("fireballs.op")) {
-						plugin.reloadConfig();
-						sender.sendMessage(reloadMessage);
+						plugin.doReload(sender);
+
 						return true;
 					}
 					sender.sendMessage(noPermission);

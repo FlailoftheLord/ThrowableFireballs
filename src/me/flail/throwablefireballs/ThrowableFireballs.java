@@ -139,6 +139,12 @@ public class ThrowableFireballs extends JavaPlugin implements Listener {
 		return new TabCompleter(command).construct(args);
 	}
 
+	public void doReload(CommandSender op) {
+		reloadConfig();
+		this.conf = getConfig();
+		op.sendMessage(tools.chat(conf.getString("ReloadMessage")));
+	}
+
 	void initiateWorldGuard() {
 		wg = WorldGuard.getInstance();
 		if (wg != null) {

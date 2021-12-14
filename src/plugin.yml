@@ -3,7 +3,7 @@ main: me.flail.throwablefireballs.ThrowableFireballs
 version: 1.8.9
 author: FlailoftheLord
 description: Throw Fireballs, like a Ghast!
-api-version: 1.17
+api-version: 1.18
 
 # dependencies shits
 loadbefore: [WorldGuard]

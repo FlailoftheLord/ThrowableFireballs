@@ -39,7 +39,7 @@ import me.flail.throwablefireballs.tools.Tools;
 
 public class FireballExplosion extends Tools implements Listener {
 
-	private ThrowableFireballs plugin = JavaPlugin.getPlugin(ThrowableFireballs.class);
+	ThrowableFireballs plugin;
 
 	private static String fbMetadata = "HolyBalls";
 
@@ -49,12 +49,11 @@ public class FireballExplosion extends Tools implements Listener {
 		if (Objects.isNull(event.getHitBlock()))
 			return;
 
-		plugin = JavaPlugin.getPlugin(ThrowableFireballs.class);
-		FileConfiguration config = plugin.conf;
-
 		Entity entity = event.getEntity();
 
 		if (entity instanceof Fireball) {
+			plugin = JavaPlugin.getPlugin(ThrowableFireballs.class);
+			FileConfiguration config = plugin.conf;
 
 			boolean doesNaturalDamage = config.getBoolean("NaturalExplosion", true);
 
@@ -101,7 +100,7 @@ public class FireballExplosion extends Tools implements Listener {
 						droppedItem.setCustomName(new Tools().chat(config.getString("FireballName", "&6Fireball")));
 						droppedItem.setCustomNameVisible(true);
 
-						plugin.server.getScheduler().scheduleSyncDelayedTask(plugin, () -> {
+						plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, () -> {
 
 							droppedItem.remove();
 						}, 32L);

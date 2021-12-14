@@ -112,8 +112,8 @@ public class FireballThrow implements Listener {
 
 							if (cooldown.containsKey(player.getName()) && !player.hasPermission("fireballs.bypass")) {
 
-								double timeLeft = (cooldown.get(player.getName()) / 1000D + cooldownTime)
-										- (System.currentTimeMillis() / 1000D);
+								double timeLeft = Math.ceil((cooldown.get(player.getName()) / 1000D + cooldownTime)
+										- (System.currentTimeMillis() / 1000D));
 
 								boolean sendCooldownMessage = config.getBoolean("CooldownMessageEnabled", false);
 

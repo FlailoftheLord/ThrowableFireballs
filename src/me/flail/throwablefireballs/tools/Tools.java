@@ -115,12 +115,18 @@ public class Tools {
 
 			}
 
+			/*
+			Location ePos = entity.getLocation();
+			double x = Math.abs(ePos.getX() - target.getX());
+			double y = ePos.getY() - target.getY();
+			double z = Math.abs(ePos.getZ() - target.getZ());
+			*/
+
 			double distance = (maxHeight - entity.getLocation().distance(target));
 
-			double TWO_PI = 1.76 * Math.PI;
-
 			Vector variantVel = entity.getLocation().getDirection().multiply(-1);
-			variantVel = variantVel.setY(distance / TWO_PI);
+
+			variantVel = variantVel.setY(distance / (Math.PI * 1.67));
 
 			entity.setVelocity(variantVel);
 
