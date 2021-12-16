@@ -17,7 +17,6 @@ package me.flail.throwablefireballs.handlers;
 import java.util.HashMap;
 import java.util.List;
 
-import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -176,14 +175,16 @@ public class FireballThrow implements Listener {
 
 		boolean doesNaturalDamage = config.getBoolean("NaturalExplosion", true);
 
+		/* Most likely won't need this any longer
 		if (config.getInt("LaunchPosition", 0) > 0) {
 			fireball.remove();
-
+		
 			Location newLocation = player.getLineOfSight(null, 2).get(1).getLocation()
 					.setDirection(player.getLocation().getDirection());
-
+		
 			fireball = world.spawn(newLocation, fireball.getClass());
 		}
+		*/
 
 		fireball.setIsIncendiary(doesNaturalDamage);
 		if (!doesNaturalDamage) {

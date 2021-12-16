@@ -38,9 +38,6 @@ FireballDamage: 3.5
 # Set wether the Fireball does fire on impact or not
 FireballSetFire: true
 
-# Any number above 0 will use a different mechanic to launch the fireball, preventing it from exploding on your head sometimes.
-LaunchPosition: 0
-
 # Whether you can throw a fireball from your offhand
 AllowOffhandThrowing: true
 
