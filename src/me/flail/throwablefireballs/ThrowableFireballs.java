@@ -76,15 +76,13 @@ public class ThrowableFireballs extends JavaPlugin implements Listener {
 
 		// Update config file
 		saveDefaultConfig();
-		conf = getConfig();
 
 	}
 
 	@Override
 	public void onEnable() {
 
-		immuneBlocks.addAll(conf.getStringList("ImmuneBlocks"));
-		immuneBlockKeys.addAll(conf.getStringList("ImmuneBlockKeys"));
+		this.doReload(null);
 
 		registerRecipes();
 
@@ -142,7 +140,10 @@ public class ThrowableFireballs extends JavaPlugin implements Listener {
 	public void doReload(CommandSender op) {
 		reloadConfig();
 		this.conf = getConfig();
-		op.sendMessage(tools.chat(conf.getString("ReloadMessage")));
+		immuneBlocks.addAll(conf.getStringList("ImmuneBlocks"));
+		immuneBlockKeys.addAll(conf.getStringList("ImmuneBlockKeys"));
+		if (op != null)
+			op.sendMessage(tools.chat(conf.getString("ReloadMessage")));
 	}
 
 	void initiateWorldGuard() {

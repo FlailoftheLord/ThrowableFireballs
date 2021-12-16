@@ -14,6 +14,7 @@
 
 package me.flail.throwablefireballs.handlers;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -124,8 +125,8 @@ public class FireballExplosion extends Tools implements Listener {
 		if (e.hasMetadata(fbMetadata) || (e.getCustomName() != null) && e.getCustomName().equals(fbMetadata)
 				|| e.hasMetadata("Fireballed")) {
 
-			List<String> immuneBlocks = plugin.getConfig().getStringList("ImmuneBlocks");
-			List<String> immuneKeys = plugin.getConfig().getStringList("ImmuneBlockKeywords");
+			List<String> immuneBlocks = new ArrayList<>(plugin.immuneBlocks);
+			List<String> immuneKeys = new ArrayList<>(plugin.immuneBlockKeys);
 			for (String s : immuneBlocks.toArray(new String[] {})) {
 				immuneBlocks.remove(s);
 				immuneBlocks.add(s.toUpperCase());
