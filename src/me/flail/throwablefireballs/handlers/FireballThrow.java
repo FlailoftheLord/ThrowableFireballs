@@ -36,7 +36,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import me.flail.throwablefireballs.ThrowableFireballs;
 import me.flail.throwablefireballs.tools.Tools;
 
-public class FireballThrow implements Listener {
+public class FireballThrow extends Tools implements Listener {
 
 	private ThrowableFireballs plugin = JavaPlugin.getPlugin(ThrowableFireballs.class);
 
@@ -56,107 +56,96 @@ public class FireballThrow implements Listener {
 
 		if ((a == Action.RIGHT_CLICK_BLOCK) || (a == Action.RIGHT_CLICK_AIR)) {
 
+			if (plugin.disabledGamemodes.contains(player.getGameMode()))
+				return;
+
+			ItemStack fb = player.getInventory().getItemInMainHand();
+			ItemStack fbo = player.getInventory().getItemInOffHand();
+			ItemStack item = event.getItem();
+
 			boolean allowFirecharge = config.getBoolean("UseFirecharge");
 			boolean fboEnabled = config.getBoolean("AllowOffhandThrowing");
 
 			double cooldownTime = config.getDouble("Cooldown");
 
-			ItemStack fbItem = new FireballItem().fireball();
+			if ((allowFirecharge && fb.getType().equals(Material.FIRE_CHARGE))
+					|| (allowFirecharge && fbo.getType().equals(Material.FIRE_CHARGE)) && fboEnabled || this.isFireball(fb)
+					|| (this.isFireball(fbo) && fboEnabled)) {
 
-			if (fbItem != null) {
+				boolean isInNoThrowWorld = false;
 
-				ItemStack fb = player.getInventory().getItemInMainHand();
-				ItemStack fbo = player.getInventory().getItemInOffHand();
+				event.setCancelled(true);
 
-				ItemStack item = event.getItem();
-				if (item != null) {
-					fbItem.setAmount(item.getAmount());
-				}
+				String pWorld = player.getWorld().getName().toLowerCase();
+				List<String> noThrowWorlds = config.getStringList("NoThrowZones");
 
-				if ((allowFirecharge && fb.getType().equals(Material.FIRE_CHARGE))
-						|| (allowFirecharge && fbo.getType().equals(Material.FIRE_CHARGE)) || fb.equals(fbItem)
-						|| (fbo.equals(fbItem) && fboEnabled)) {
+				for (String world : noThrowWorlds) {
 
-					boolean isInNoThrowWorld = false;
+					if (world.equalsIgnoreCase(pWorld)) {
 
-					event.setCancelled(true);
-
-					String pWorld = player.getWorld().getName().toLowerCase();
-					List<String> noThrowWorlds = config.getStringList("NoThrowZones");
-
-					for (String world : noThrowWorlds) {
-
-						if (world.equalsIgnoreCase(pWorld)) {
-
-							isInNoThrowWorld = true;
-							break;
-
-						}
+						isInNoThrowWorld = true;
+						break;
 
 					}
 
-					if (isInNoThrowWorld) {
+				}
 
-						String noThrowingMessage = config.getString("NoThrowZoneMessage");
+				if (isInNoThrowWorld) {
 
-						player.sendMessage(tools.chat(noThrowingMessage));
+					String noThrowingMessage = config.getString("NoThrowZoneMessage");
 
-					} else {
-						int consume = 1;
+					player.sendMessage(tools.chat(noThrowingMessage));
 
-						if (player.hasPermission("fireballs.throw")) {
+				} else {
+					int consume = 1;
 
-							Material onHandItem = fb.getType();
-							Material offHandItem = fbo.getType();
+					if (player.hasPermission("fireballs.throw")) {
 
-							if (cooldown.containsKey(player.getName()) && !player.hasPermission("fireballs.bypass")) {
+						Material onHandItem = fb.getType();
+						Material offHandItem = fbo.getType();
 
-								double timeLeft = Math.ceil((cooldown.get(player.getName()) / 1000D + cooldownTime)
-										- (System.currentTimeMillis() / 1000D));
+						if (cooldown.containsKey(player.getName()) && !player.hasPermission("fireballs.bypass")) {
 
-								boolean sendCooldownMessage = config.getBoolean("CooldownMessageEnabled", false);
+							double timeLeft = Math.ceil((cooldown.get(player.getName()) / 1000D + cooldownTime)
+									- (System.currentTimeMillis() / 1000D));
 
-								String cooldownMessage = config.getString("CooldownMessage").replace("%cooldown%",
-										timeLeft + "");
+							boolean sendCooldownMessage = config.getBoolean("CooldownMessageEnabled", false);
 
-								if (timeLeft > 0) {
-									if (((onHandItem != null))
-											|| ((offHandItem == null))) {
-										if (sendCooldownMessage) {
-											player.sendMessage(tools.chat(cooldownMessage));
-											consume = 0;
-										}
+							String cooldownMessage = config.getString("CooldownMessage").replace("%cooldown%",
+									timeLeft + "");
 
+							if (timeLeft > 0) {
+								if (((onHandItem != null))
+										|| ((offHandItem == null))) {
+									if (sendCooldownMessage) {
+										player.sendMessage(tools.chat(cooldownMessage));
+										consume = 0;
 									}
-									return;
+
 								}
-
-							}
-
-							if (player.hasPermission("fireballs.infinite")) {
-								consume = 0;
-							}
-
-							if ((item == null) || (item.getAmount() < consume)) {
 								return;
 							}
 
-							if (item.getAmount() == consume) {
-								player.getInventory().removeItem(new ItemStack(item));
-							} else {
-								item.setAmount(item.getAmount() - consume);
-							}
-
-							cooldown.put(player.getName(), System.currentTimeMillis());
-
-							this.throwBall(player);
-
-						} else {
-							player.sendMessage(tools.chat(
-									config.getString("NoPermissionMessage", "%prefix% &cYou don't have permission!")));
 						}
 
-					}
+						if (player.hasPermission("fireballs.infinite"))
+							consume = 0;
+
+						if (item != null && item.getAmount() < consume)
+							return;
+
+						if (item != null && item.getAmount() == consume)
+							player.getInventory().removeItem(new ItemStack(item));
+						else if (item != null)
+							item.setAmount(item.getAmount() - consume);
+
+						cooldown.put(player.getName(), System.currentTimeMillis());
+
+						this.throwBall(player);
+
+					} else
+						player.sendMessage(tools.chat(
+								config.getString("NoPermissionMessage", "%prefix% &cYou don't have permission!")));
 
 				}
 

@@ -24,8 +24,6 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-import me.flail.throwablefireballs.config.Config;
-import me.flail.throwablefireballs.config.ConfigUpdater;
 import me.flail.throwablefireballs.handlers.FireballItem;
 import me.flail.throwablefireballs.handlers.FireballThrow;
 import me.flail.throwablefireballs.tools.Tools;
@@ -88,11 +86,14 @@ public class Commands extends Tools {
 					}
 					sender.sendMessage(noPermission);
 					return true;
+
 				case "updateconfig":
 					if (sender.hasPermission("fireballs.op")) {
-						sender.sendMessage(chat("%prefix% &aThe configuration has been updated with the newest settings!"));
-						sender.sendMessage(chat("&7A copy of your old config has been saved to &e&oold-config.yml"));
-						return new ConfigUpdater().updateConfig(Config.get());
+						sender.sendMessage(chat("&eConfig fixing will be updated next release."));
+						// sender.sendMessage(chat("%prefix% &aThe configuration has been updated with the newest
+						// settings!"));
+						// sender.sendMessage(chat("&7A copy of your old config has been saved to &e&oold-config.yml"));
+						// return new ConfigUpdater().updateConfig(Config.get());
 					}
 					sender.sendMessage(noPermission);
 					return true;

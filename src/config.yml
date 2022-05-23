@@ -47,6 +47,14 @@ UseFirecharge: false
 # Set the maximum number of blocks in height you can jump with a fireball
 MaxJumpHeight: 8
 
+# Fireball throwing is enabled/disabled (true/false) in the following gamemodes
+Gamemodes:
+  Adventure: true
+  Creative: true
+  Spectator: false
+  Survival: true
+  
+
 # List of worlds where throwing fireballs is NOT allowed
 NoThrowZones:
 - "world_the_end"

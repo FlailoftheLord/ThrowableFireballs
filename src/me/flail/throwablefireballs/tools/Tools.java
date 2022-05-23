@@ -26,6 +26,9 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.util.Vector;
 
 import me.flail.throwablefireballs.ThrowableFireballs;
@@ -142,6 +145,21 @@ public class Tools {
 		}
 
 		return modified;
+	}
+
+	protected ItemStack addTag(ItemStack item) {
+		ItemMeta meta = item.getItemMeta();
+		meta.getPersistentDataContainer().set(plugin.namespace, PersistentDataType.STRING,
+				"fireballxyz");
+		item.setItemMeta(meta);
+
+		return item;
+	}
+
+	protected boolean isFireball(ItemStack item) {
+		if (!item.hasItemMeta())
+			return false;
+		return item.getItemMeta().getPersistentDataContainer().has(plugin.namespace, PersistentDataType.STRING);
 	}
 
 }

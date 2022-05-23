@@ -22,16 +22,18 @@ import java.io.FileWriter;
 
 import org.bukkit.configuration.file.FileConfiguration;
 
-public class ConfigUpdater {
+import me.flail.throwablefireballs.tools.Tools;
+
+public class ConfigUpdater extends Tools {
 
 	public boolean updateConfig(FileConfiguration config) {
-		Config confDb = new Config();
+		Config confDb = plugin.configDB;
 
 		File configFile = new File("plugins/ThrowableFireballs/config.yml");
 
 		File backup = new File("plugins/ThrowableFireballs/old-config.yml");
 
-		for (String option : confDb.options()) {
+		for (String option : confDb.getConfigurationOptions().keySet()) {
 			if (!config.contains(option)) {
 
 				try {

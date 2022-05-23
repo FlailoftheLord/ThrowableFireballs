@@ -15,9 +15,13 @@
 package me.flail.throwablefireballs;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
+import org.bukkit.NamespacedKey;
 import org.bukkit.Server;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -35,6 +39,7 @@ import org.bukkit.scheduler.BukkitScheduler;
 
 import com.sk89q.worldguard.WorldGuard;
 
+import me.flail.throwablefireballs.config.Config;
 import me.flail.throwablefireballs.handlers.FireballCraft;
 import me.flail.throwablefireballs.handlers.FireballDamage;
 import me.flail.throwablefireballs.handlers.FireballExplosion;
@@ -48,14 +53,18 @@ import me.flail.throwablefireballs.tools.Tools;
 
 public class ThrowableFireballs extends JavaPlugin implements Listener {
 
+	public NamespacedKey namespace = new NamespacedKey(this, "throwable_fireballs");
+
 	public ConsoleCommandSender console;
 	public boolean isWorldGuard;
 	public WorldGuardHandle worldguard;
 	public FileConfiguration conf;
+	public Config configDB;
 	Tools tools;
 
 	public final List<String> immuneBlocks = new ArrayList<>();
 	public final List<String> immuneBlockKeys = new ArrayList<>();
+	public Set<GameMode> disabledGamemodes = new HashSet<>();
 
 	public Server server;
 	public BukkitScheduler scheduler;
@@ -77,6 +86,8 @@ public class ThrowableFireballs extends JavaPlugin implements Listener {
 		// Update config file
 		saveDefaultConfig();
 
+		// configDB = new Config();
+
 	}
 
 	@Override
@@ -96,7 +107,7 @@ public class ThrowableFireballs extends JavaPlugin implements Listener {
 		tools.console(" ");
 		tools.console("&6ThrowableFireballs &7v" + version);
 		tools.console("&2  by FlailoftheLord");
-		tools.console("&6 Grief Extreme!?!?");
+		tools.console("&6 NANI KORE~!?!?");
 		tools.console(" ");
 
 		if (m.getPlugin(WORLD_GUARD) != null) {// m.getPlugin(WORLD_GUARD).isEnabled())
@@ -142,6 +153,8 @@ public class ThrowableFireballs extends JavaPlugin implements Listener {
 		this.conf = getConfig();
 		immuneBlocks.addAll(conf.getStringList("ImmuneBlocks"));
 		immuneBlockKeys.addAll(conf.getStringList("ImmuneBlockKeys"));
+		this.registerGamemodes();
+
 		if (op != null)
 			op.sendMessage(tools.chat(conf.getString("ReloadMessage")));
 	}
@@ -208,6 +221,14 @@ public class ThrowableFireballs extends JavaPlugin implements Listener {
 
 		server.addRecipe(recipes.fireballRecipe());
 
+	}
+
+	private void registerGamemodes() {
+		for (String s : new String[] { "Adventure", "Creative", "Spectator", "Survival" }) {
+			if (!conf.getBoolean("Gamemodes." + s, true))
+				this.disabledGamemodes.add(GameMode.valueOf(s.toUpperCase()));
+
+		}
 	}
 
 }

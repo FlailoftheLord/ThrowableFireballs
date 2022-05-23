@@ -26,7 +26,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import me.flail.throwablefireballs.ThrowableFireballs;
 import me.flail.throwablefireballs.tools.Tools;
 
-public class FireballItem {
+public class FireballItem extends Tools {
 
 	private ThrowableFireballs plugin = ThrowableFireballs.getPlugin(ThrowableFireballs.class);
 
@@ -58,7 +58,7 @@ public class FireballItem {
 
 		fb.setItemMeta(fbMeta);
 
-		return fb;
+		return this.addTag(fb);
 
 	}
 
