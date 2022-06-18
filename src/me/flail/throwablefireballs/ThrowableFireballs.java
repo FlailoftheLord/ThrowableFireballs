@@ -86,7 +86,8 @@ public class ThrowableFireballs extends JavaPlugin implements Listener {
 		// Update config file
 		saveDefaultConfig();
 
-		// configDB = new Config();
+		configDB = new Config();
+		configDB.setup();
 
 	}
 
@@ -149,8 +150,8 @@ public class ThrowableFireballs extends JavaPlugin implements Listener {
 	}
 
 	public void doReload(CommandSender op) {
-		reloadConfig();
 		this.conf = getConfig();
+
 		immuneBlocks.addAll(conf.getStringList("ImmuneBlocks"));
 		immuneBlockKeys.addAll(conf.getStringList("ImmuneBlockKeys"));
 		this.registerGamemodes();

@@ -30,11 +30,9 @@ public class FireballItem extends Tools {
 
 	private ThrowableFireballs plugin = ThrowableFireballs.getPlugin(ThrowableFireballs.class);
 
-	private Tools tools = new Tools();
-
 	public ItemStack fireball() {
 
-		FileConfiguration config = plugin.getConfig();
+		FileConfiguration config = plugin.conf;
 
 		Material fireballType = Material
 				.matchMaterial(config.get("FireballItem", "FIRE_CHARGE").toString().toUpperCase().replaceAll("[^A-Z\\_]", ""));
@@ -45,7 +43,7 @@ public class FireballItem extends Tools {
 		ArrayList<String> fbLore = new ArrayList<>();
 
 		for (String l : fbLoreList) {
-			fbLore.add(tools.chat(l));
+			fbLore.add(chat(l));
 		}
 
 		ItemStack fb = new ItemStack(fireballType);
@@ -53,7 +51,7 @@ public class FireballItem extends Tools {
 		ItemMeta fbMeta = fb.getItemMeta();
 
 		fbMeta.setLore(fbLore);
-		fbMeta.setDisplayName(tools.chat(fbName));
+		fbMeta.setDisplayName(chat(fbName));
 		fbMeta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
 
 		fb.setItemMeta(fbMeta);

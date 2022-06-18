@@ -22,7 +22,6 @@ import java.util.regex.Pattern;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -32,15 +31,14 @@ import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.util.Vector;
 
 import me.flail.throwablefireballs.ThrowableFireballs;
+import me.flail.throwablefireballs.config.Config;
 
 public class Tools {
 	private static final char COLOR_CHAR = ChatColor.COLOR_CHAR;
 
 	protected ThrowableFireballs plugin = ThrowableFireballs.getPlugin(ThrowableFireballs.class);
 
-	private FileConfiguration config = plugin.getConfig();
-
-	String prefix = config.getString("Prefix");
+	String prefix = Config.options().get("Prefix").toString();
 	String version = plugin.getDescription().getVersion();
 
 	public String chat(String s) {
@@ -92,7 +90,7 @@ public class Tools {
 
 		Location target = center.getLocation();
 
-		int maxHeight = plugin.getConfig().getInt("MaxJumpHeight");
+		int maxHeight = plugin.conf.getInt("MaxJumpHeight");
 
 		List<Entity> nearbyEntities = center.getNearbyEntities(radius, radius, radius);
 

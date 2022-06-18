@@ -41,7 +41,7 @@ public class FireballRecipe {
 
 	public Recipe fireballRecipe() {
 
-		FileConfiguration config = plugin.getConfig();
+		FileConfiguration config = plugin.conf;
 
 		int yield = config.getInt("CraftingRecipe.AmountGiven");
 

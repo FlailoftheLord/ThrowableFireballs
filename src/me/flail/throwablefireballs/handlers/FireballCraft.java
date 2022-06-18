@@ -17,7 +17,7 @@ public class FireballCraft extends Tools implements Listener {
 		if (!((Player) e).hasPermission("fireballs.craft") && event.getRecipe().getResult().equals(new FireballItem().fireball())) {
 			event.setResult(Result.DENY);
 			e.closeInventory();
-			e.sendMessage(chat(plugin.getConfig().getString("NoCraftPermission")));
+			e.sendMessage(chat(plugin.conf.getString("NoCraftPermission")));
 		}
 
 	}

@@ -49,7 +49,7 @@ public class FireballThrow extends Tools implements Listener {
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void playerThrow(PlayerInteractEvent event) {
 
-		config = plugin.getConfig();
+		config = plugin.conf;
 
 		Player player = event.getPlayer();
 		Action a = event.getAction();

@@ -34,8 +34,7 @@ public class Commands extends Tools {
 	private CommandSender sender;
 	private String[] args;
 
-	private ThrowableFireballs plugin = ThrowableFireballs.getPlugin(ThrowableFireballs.class);
-	private FileConfiguration config = plugin.getConfig();
+	private FileConfiguration config = plugin.conf;
 
 	public Commands(CommandSender sender, Command command, String label, String[] args) {
 		this.sender = sender;
@@ -89,11 +88,8 @@ public class Commands extends Tools {
 
 				case "updateconfig":
 					if (sender.hasPermission("fireballs.op")) {
-						sender.sendMessage(chat("&eConfig fixing will be updated next release."));
-						// sender.sendMessage(chat("%prefix% &aThe configuration has been updated with the newest
-						// settings!"));
-						// sender.sendMessage(chat("&7A copy of your old config has been saved to &e&oold-config.yml"));
-						// return new ConfigUpdater().updateConfig(Config.get());
+						plugin.configDB.setup();
+						sender.sendMessage(chat("%prefix% &6Configuration file has been updated and any broken values fixed."));
 					}
 					sender.sendMessage(noPermission);
 					return true;

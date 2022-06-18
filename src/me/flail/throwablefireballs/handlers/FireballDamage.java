@@ -35,7 +35,7 @@ public class FireballDamage implements Listener {
 
 	public double fireballDamage(Entity damaged, Entity damager, DamageCause cause, double baseDamage) {
 
-		FileConfiguration config = plugin.getConfig();
+		FileConfiguration config = plugin.conf;
 
 		boolean doesNaturalDamage = config.getBoolean("NaturalExplosion");
 
