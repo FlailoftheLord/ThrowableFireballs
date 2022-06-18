@@ -150,7 +150,7 @@ public class ThrowableFireballs extends JavaPlugin implements Listener {
 	}
 
 	public void doReload(CommandSender op) {
-		this.conf = getConfig();
+		this.conf = configDB.get();
 
 		immuneBlocks.addAll(conf.getStringList("ImmuneBlocks"));
 		immuneBlockKeys.addAll(conf.getStringList("ImmuneBlockKeys"));

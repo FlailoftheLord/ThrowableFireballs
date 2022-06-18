@@ -31,6 +31,7 @@ public class Config extends Tools {
 	 * @return config file formatted as {@link FileConfiguration}
 	 */
 	public FileConfiguration get() {
+		plugin.reloadConfig();
 		return plugin.getConfig();
 	}
 
