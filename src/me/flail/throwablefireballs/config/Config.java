@@ -143,8 +143,8 @@ public class Config extends Tools {
 		list.put("NoThrowZones", new String[] { "world_the_end", "example_world" });
 		list.put("NoThrowZoneMessage", "%prefix% &cYou're not allowed to throw fireballs in this world!");
 		list.put("Prefix", "&8(&6Fireballs&8)");
-		list.put("ReloadMessage", "  %prefix% &aconfig file successfully reloaded,"
-				+ "   &amake sure to restart the server if changing the fireball recipe!");
+		list.put("ReloadMessage", "%prefix% &aconfig file successfully reloaded,"
+				+ " &amake sure to restart the server if changing the fireball recipe!");
 		list.put("NoPermissionMessage", "%prefix% &cYou do not have permission to use this");
 		list.put("NoCraftPermission", "%prefix% &cYou don't have permission to craft this.");
 		list.put("CooldownMessageEnabled", Boolean.TRUE);

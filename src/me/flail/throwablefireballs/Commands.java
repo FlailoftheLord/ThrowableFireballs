@@ -90,8 +90,8 @@ public class Commands extends Tools {
 					if (sender.hasPermission("fireballs.op")) {
 						plugin.configDB.setup();
 						sender.sendMessage(chat("%prefix% &6Configuration file has been updated and any broken values fixed."));
-					}
-					sender.sendMessage(noPermission);
+					} else
+						sender.sendMessage(noPermission);
 					return true;
 				}
 
