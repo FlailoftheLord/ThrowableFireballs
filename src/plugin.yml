@@ -1,9 +1,9 @@
 name: ThrowableFireballs
 main: me.flail.throwablefireballs.ThrowableFireballs
-version: 1.9.2
+version: 1.9.3
 author: FlailoftheLord
 description: Throw Fireballs, like a Ghast!
-api-version: 1.18
+api-version: 1.19
 
 # dependencies shits
 loadbefore: [WorldGuard]
