@@ -151,7 +151,7 @@ public class Config extends Tools {
 		list.put("CooldownMessageEnabled", Boolean.TRUE);
 		list.put("CooldownMessage", "%prefix% &cYou must wait %cooldown% seconds before throwing this");
 		list.put("Cooldown", 1);
-		list.put("FireballItem", "fire_charge");
+		list.put("FireballItem", "FIRE_CHARGE");
 		list.put("FireballName", "&6Fireball");
 		list.put("Lore", new String[] { "&7right click to throw", "&7grief extreme ;)" });
 		list.put("CraftingRecipe.AmountGiven", 3);

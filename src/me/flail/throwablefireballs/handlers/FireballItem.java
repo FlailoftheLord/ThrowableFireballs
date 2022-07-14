@@ -34,8 +34,13 @@ public class FireballItem extends Tools {
 
 		FileConfiguration config = plugin.conf;
 
-		Material fireballType = Material
-				.matchMaterial(config.get("FireballItem", "FIRE_CHARGE").toString().toUpperCase().replaceAll("[^A-Z\\_]", ""));
+		Material fireballType = Material.matchMaterial(config.get("FireballItem").toString().replaceAll("[^A-Za-z\\_]", ""));
+
+		if (fireballType == null) {
+			console("&c the &fFireballItem &coption in your configuration is invalid, please check it's a valid Minecraft Material.");
+			fireballType = Material.FIRE_CHARGE;
+		}
+
 		String fbName = config.getString("FireballName");
 
 		List<String> fbLoreList = config.getStringList("Lore");
