@@ -46,7 +46,6 @@ public class FireballExplosion extends Tools implements Listener {
 
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void fireballExplode(ProjectileHitEvent event) {
-		// console("Projectile hit");
 		if (Objects.isNull(event.getHitBlock()))
 			return;
 
@@ -84,7 +83,6 @@ public class FireballExplosion extends Tools implements Listener {
 				if (power > 0) {
 					fbWorld.createExplosion(fbLoc, power, doesFire, true, fireball);
 
-					// console("Explosion created");
 				}
 
 				if (!fireball.getPassengers().isEmpty()) {
@@ -118,7 +116,6 @@ public class FireballExplosion extends Tools implements Listener {
 
 	@EventHandler
 	public void blockBoom(EntityExplodeEvent event) {
-		// console("Entity Explosion");
 
 		Entity e = event.getEntity();
 
@@ -135,7 +132,6 @@ public class FireballExplosion extends Tools implements Listener {
 			for (Block block : event.blockList().toArray(new Block[] {})) {
 
 				String type = block.getType().toString();
-				// plugin.console.sendMessage("Exploded entity " + type);
 
 				if (immuneBlocks.contains(type)) {
 					event.blockList().remove(block);
@@ -157,7 +153,6 @@ public class FireballExplosion extends Tools implements Listener {
 
 	@EventHandler
 	public void blockBoom(BlockExplodeEvent event) {
-		// console("Block Explosion");
 
 		List<String> immuneBlocks = plugin.immuneBlocks;
 		List<String> immuneKeys = plugin.immuneBlockKeys;
@@ -169,7 +164,6 @@ public class FireballExplosion extends Tools implements Listener {
 		for (Block block : event.blockList().toArray(new Block[] {})) {
 
 			String type = block.getType().toString().toUpperCase();
-			// plugin.console.sendMessage("Exploded block " + type);
 
 			if (immuneBlocks.contains(type)) {
 				event.blockList().remove(block);
