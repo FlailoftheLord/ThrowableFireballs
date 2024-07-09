@@ -45,7 +45,6 @@ public class Commands extends Tools {
 
 	protected boolean run() {
 		if (command.getName().equals("icanhasfireball")) {
-
 			if (sender.hasPermission("lol.fireball.lol") || sender.isOp()) {
 				sender.sendMessage(chat("%prefix% &6&o&lYass bb! &4&l<3"));
 				if (sender instanceof Player) {
@@ -57,7 +56,6 @@ public class Commands extends Tools {
 			}
 			return true;
 		} else if (command.getName().equals("throwablefireballs")) {
-
 			String noPermission = chat(config.getString("NoPermissionMessage"));
 			String defaultMsg = chat("%prefix% &6&lThrowableFireballs &7version &e%version%  &2by FlailoftheLord.");
 			String versionInfo = chat("&7Running on " + plugin.server.getName() + " version " + plugin.server.getVersion());
@@ -97,9 +95,7 @@ public class Commands extends Tools {
 
 			}
 
-			switch (args.length) {
-
-			case 0:
+			if (args.length == 0) {
 				if (label.equalsIgnoreCase("fireball") && (sender instanceof Player)) {
 					Player player = (Player) sender;
 					if (player.hasPermission("fireballs.commandthrow")) {
@@ -115,7 +111,7 @@ public class Commands extends Tools {
 				}
 
 				break;
-			case 1:
+			} else if (args.length == 1) {
 				arg = args[0].toLowerCase();
 				switch (args[0].toLowerCase()) {
 
@@ -142,11 +138,10 @@ public class Commands extends Tools {
 					break;
 				default:
 					sender.sendMessage(usage);
-
 				}
 
 				break;
-			case 2:
+			} else if (args.length == 2) {
 				arg = args[0].toLowerCase();
 				switch (arg) {
 				case "get":
@@ -181,26 +176,33 @@ public class Commands extends Tools {
 				}
 
 				break;
-			case 3:
+			} else if (args.length == 3) {
 				if (args[0].equalsIgnoreCase("give") && (sender.hasPermission("fireballs.op"))) {
+					Player found;
 					for (Player p : Bukkit.getOnlinePlayers()) {
 						if (p.getName().startsWith(args[1])) {
-							givePlayerFireball(p, Integer.parseInt(args[2].replaceAll("[^0-9]", "")));
-							sender.sendMessage(chat("%prefix% &aYou gave " + args[2] + " fireballs to " + args[1]));
+							found = p;
 							break;
 						}
 					}
 
-					sender.sendMessage(chat("%prefix% &cThat player is not online!"));
-
+					if (found == null) {
+						sender.sendMessage(chat("%prefix% &cThat player is not online!"));
+					} else {
+						String value = args[2].replaceAll("[^0-9]", "");
+						if (value != args[2]) {
+							sender.sendMessage(chat("%prefix% &cInvalid integer!"));
+							return sender != null;
+						}
+						int intval = Integer.parseInt(value);
+						givePlayerFireball(p, intval);
+						sender.sendMessage(chat("%prefix% &aYou gave " + intval + " fireballs to " + args[1]));
+					}
 				}
-
 			}
-
 		}
 
 		return sender != null;
-
 	}
 
 	protected void givePlayerFireball(Player player, int amount) {
@@ -209,7 +211,7 @@ public class Commands extends Tools {
 		if (amount > 64) {
 			for (int i = 65; i <= amount; i++) {
 				fireball.setAmount(1);
-				if ((player.getInventory().firstEmpty() != -1)) {
+				if (player.getInventory().firstEmpty() != -1) {
 					player.getInventory().addItem(fireball);
 				} else {
 					player.getWorld().dropItemNaturally(player.getLocation(), fireball);
@@ -218,12 +220,10 @@ public class Commands extends Tools {
 			return;
 		}
 
-		if ((player.getInventory().firstEmpty() != -1)) {
+		if (player.getInventory().firstEmpty() != -1) {
 			player.getInventory().addItem(fireball);
 		} else {
 			player.getWorld().dropItemNaturally(player.getLocation(), fireball);
 		}
-
 	}
-
 }
