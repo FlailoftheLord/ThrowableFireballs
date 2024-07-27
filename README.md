@@ -1,7 +1,6 @@
 # ThrowableFireballs
 A plugin that makes fireballs throwable, originally published on SpigotMC - like on hypixel, jartexnetwork etc. Working from 1.13 to 1.21.
 
-This is the first public plugin I've ever made, so I am really happy with it :D.
 <br>**A little showcase of the plugin:** https://youtu.be/MQTXVUTDw8s
 
 ## How to install
