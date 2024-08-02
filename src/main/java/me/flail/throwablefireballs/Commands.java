@@ -45,7 +45,6 @@ public class Commands extends Tools {
 
 	protected boolean run() {
 		if (command.getName().equals("icanhasfireball")) {
-
 			if (sender.hasPermission("lol.fireball.lol") || sender.isOp()) {
 				sender.sendMessage(chat("%prefix% &6&o&lYass bb! &4&l<3"));
 				if (sender instanceof Player) {
@@ -57,7 +56,6 @@ public class Commands extends Tools {
 			}
 			return true;
 		} else if (command.getName().equals("throwablefireballs")) {
-
 			String noPermission = chat(config.getString("NoPermissionMessage"));
 			String defaultMsg = chat("%prefix% &6&lThrowableFireballs &7version &e%version%  &2by FlailoftheLord.");
 			String versionInfo = chat("&7Running on " + plugin.server.getName() + " version " + plugin.server.getVersion());
@@ -77,130 +75,134 @@ public class Commands extends Tools {
 			if (args.length > 0) {
 				arg = args[0].toLowerCase();
 				switch (arg) {
-				case "reload":
-					if (sender.hasPermission("fireballs.op")) {
-						plugin.doReload(sender);
+					case "reload":
+						if (sender.hasPermission("fireballs.op")) {
+							plugin.doReload(sender);
 
-						return true;
-					}
-					sender.sendMessage(noPermission);
-					return true;
-
-				case "updateconfig":
-					if (sender.hasPermission("fireballs.op")) {
-						plugin.configDB.setup();
-						sender.sendMessage(chat("%prefix% &6Configuration file has been updated and any broken values fixed."));
-					} else
+							return true;
+						}
 						sender.sendMessage(noPermission);
-					return true;
+						return true;
+
+					case "updateconfig":
+						if (sender.hasPermission("fireballs.op")) {
+							plugin.configDB.setup();
+							sender.sendMessage(chat("%prefix% &6Configuration file has been updated and any broken values fixed."));
+						} else
+							sender.sendMessage(noPermission);
+						return true;
 				}
 
 			}
 
-			switch (args.length) {
-
-			case 0:
+			if (args.length == 0) {
 				if (label.equalsIgnoreCase("fireball") && (sender instanceof Player)) {
 					Player player = (Player) sender;
 					if (player.hasPermission("fireballs.commandthrow")) {
 						new FireballThrow().throwBall(player);
-						break;
 					}
 				}
 
 				sender.sendMessage(defaultMsg);
 				if (sender.hasPermission("fireballs.op")) {
 					sender.sendMessage(usage);
-					break;
+
 				}
 
-				break;
-			case 1:
+
+			} else if (args.length == 1) {
 				arg = args[0].toLowerCase();
 				switch (args[0].toLowerCase()) {
 
-				case "help":
-					for (String line : helpLines) {
-						sender.sendMessage(line);
-					}
-					break;
-				case "info":
-					sender.sendMessage(defaultMsg);
-					if (sender.hasPermission("fireballs.op")) {
-						sender.sendMessage(versionInfo);
-						sender.sendMessage(usage);
-					}
-					break;
-				case "get":
-					if (sender.hasPermission("fireballs.op") && (sender instanceof Player)) {
-						Player player = (Player) sender;
-						player.getInventory().addItem(new FireballItem().fireball());
-						sender.sendMessage(chat("%prefix% &ayou got a fireball."));
+					case "help":
+						for (String line : helpLines) {
+							sender.sendMessage(line);
+						}
 						break;
-					}
-					sender.sendMessage(noPermission);
-					break;
-				default:
-					sender.sendMessage(usage);
-
+					case "info":
+						sender.sendMessage(defaultMsg);
+						if (sender.hasPermission("fireballs.op")) {
+							sender.sendMessage(versionInfo);
+							sender.sendMessage(usage);
+						}
+						break;
+					case "get":
+						if (sender.hasPermission("fireballs.op") && (sender instanceof Player)) {
+							Player player = (Player) sender;
+							player.getInventory().addItem(new FireballItem().fireball());
+							sender.sendMessage(chat("%prefix% &ayou got a fireball."));
+							break;
+						}
+						sender.sendMessage(noPermission);
+						break;
+					default:
+						sender.sendMessage(usage);
 				}
 
-				break;
-			case 2:
+
+			} else if (args.length == 2) {
 				arg = args[0].toLowerCase();
 				switch (arg) {
-				case "get":
-					int amount = Integer.parseInt(args[1].replaceAll("[^0-9]", ""));
-					if (sender.hasPermission("fireballs.op") && (sender instanceof Player)) {
-						Player player = (Player) sender;
-						givePlayerFireball(player, amount);
-						break;
-					}
-					sender.sendMessage(noPermission);
+					case "get":
+						int amount = Integer.parseInt(args[1].replaceAll("[^0-9]", ""));
+						if (sender.hasPermission("fireballs.op") && (sender instanceof Player)) {
+							Player player = (Player) sender;
+							givePlayerFireball(player, amount);
+							break;
+						}
+						sender.sendMessage(noPermission);
 
-					break;
-				case "give":
-					if (sender.hasPermission("fireballs.op")) {
-						boolean isValidPlayer = false;
-						for (Player p : Bukkit.getOnlinePlayers()) {
-							if (p.getName().startsWith(args[1])) {
-								givePlayerFireball(p, 1);
-								sender.sendMessage(chat("%prefix% &aYou gave one fireball to " + args[1]));
-								isValidPlayer = true;
-								break;
+						break;
+					case "give":
+						if (sender.hasPermission("fireballs.op")) {
+							boolean isValidPlayer = false;
+							for (Player p : Bukkit.getOnlinePlayers()) {
+								if (p.getName().startsWith(args[1])) {
+									givePlayerFireball(p, 1);
+									sender.sendMessage(chat("%prefix% &aYou gave one fireball to " + args[1]));
+									isValidPlayer = true;
+									break;
+								}
+
 							}
-
+							if (!isValidPlayer) {
+								sender.sendMessage(chat("%prefix% &cThat player is not online!"));
+							}
+							break;
 						}
-						if (!isValidPlayer) {
-							sender.sendMessage(chat("%prefix% &cThat player is not online!"));
-						}
-						break;
-					}
-					sender.sendMessage(noPermission);
+						sender.sendMessage(noPermission);
 
 				}
 
-				break;
-			case 3:
+
+			} else if (args.length == 3) {
 				if (args[0].equalsIgnoreCase("give") && (sender.hasPermission("fireballs.op"))) {
-					for (Player p : Bukkit.getOnlinePlayers()) {
-						if (p.getName().startsWith(args[1])) {
-							givePlayerFireball(p, Integer.parseInt(args[2].replaceAll("[^0-9]", "")));
-							sender.sendMessage(chat("%prefix% &aYou gave " + args[2] + " fireballs to " + args[1]));
+					Player found;
+                    found = null;
+                    for (Player p : Bukkit.getOnlinePlayers()) {
+						if (p.getName().equalsIgnoreCase(args[1])) {
+							found = p;
 							break;
 						}
 					}
 
-					sender.sendMessage(chat("%prefix% &cThat player is not online!"));
-
+					if (found == null)
+						sender.sendMessage(chat("%prefix% &cThat player is not online!"));
+                    else {
+						String value = args[2].replaceAll("[^0-9]", "");
+						if (value != args[2]) {
+							sender.sendMessage(chat("%prefix% &cInvalid integer!"));
+							return sender != null;
+						}
+						int intval = Integer.parseInt(value);
+						givePlayerFireball(found, intval);
+						sender.sendMessage(chat("%prefix% &aYou gave " + intval + " fireballs to " + args[1]));
+					}
 				}
-
 			}
-
 		}
 
 		return sender != null;
-
 	}
 
 	protected void givePlayerFireball(Player player, int amount) {
@@ -209,7 +211,7 @@ public class Commands extends Tools {
 		if (amount > 64) {
 			for (int i = 65; i <= amount; i++) {
 				fireball.setAmount(1);
-				if ((player.getInventory().firstEmpty() != -1)) {
+				if (player.getInventory().firstEmpty() != -1) {
 					player.getInventory().addItem(fireball);
 				} else {
 					player.getWorld().dropItemNaturally(player.getLocation(), fireball);
@@ -218,12 +220,10 @@ public class Commands extends Tools {
 			return;
 		}
 
-		if ((player.getInventory().firstEmpty() != -1)) {
+		if (player.getInventory().firstEmpty() != -1) {
 			player.getInventory().addItem(fireball);
 		} else {
 			player.getWorld().dropItemNaturally(player.getLocation(), fireball);
 		}
-
 	}
-
 }
