@@ -1,5 +1,11 @@
-/bin
+/build
+/gradle
 *.class
-.classpath
-.project
-.settings/org.eclipse.ltk.core.refactoring.prefs
+/.idea
+/.gradle
+/.github
+/.git
+gradle.properties
+gradlew
+gradlew.bat
+

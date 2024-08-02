@@ -1,0 +1,44 @@
+name: ThrowableFireballs
+main: me.flail.throwablefireballs.ThrowableFireballs
+version: 1.9.5
+author: FlailoftheLord
+description: Throw Fireballs, like a Ghast!
+api-version: 1.21
+# dependencies shits
+loadbefore: [WorldGuard]
+
+commands:
+    throwablefireballs:
+      description: Main Plugin Command
+      usage: /throwablefireballs <reload:updateconfig:get:give:about> <get%amount:give%player-name> [player-name%amount]
+      aliases: [fireballs, fireball, fball]
+    icanhasfireball:
+      description: lol
+      usage: /icanhasfireball
+      
+permissions:
+  fireballs.infinite:
+    description: won't ever run outta fireballs.
+    default: false
+  fireballs.op:
+    description: use commands
+    default: op
+  fireballs.throw:
+    description: throw ballz ;D
+    default: true
+  fireballs.commandthrow:
+    description: throw ballz using commands
+    default: op
+  fireballs.bypass:
+    description: bypass the cooldown
+    default: false
+  fireballs.craft:
+    description: craft fireballs
+    default: true
+      
+ # Permissions
+ #   fireballs.op
+ #   fireballs.infinite
+ #   fireballs.throw
+ #   fireballs.commandthrow
+ #   fireballs.bypass
