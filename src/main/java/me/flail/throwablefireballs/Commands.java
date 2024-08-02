@@ -188,7 +188,7 @@ public class Commands extends Tools {
 						String value = args[2].replaceAll("[^0-9]", "");
 						if (!value.equals(args[2])) {
 							sender.sendMessage(chat("%prefix% &cInvalid number!"));
-							return sender != null;
+							return true;
 						}
 						int intval = Integer.parseInt(value);
 						givePlayerFireball(found, intval);
@@ -198,7 +198,7 @@ public class Commands extends Tools {
 			}
 		}
 
-		return sender != null;
+		return false;
 	}
 
 	protected void givePlayerFireball(Player player, int amount) {
