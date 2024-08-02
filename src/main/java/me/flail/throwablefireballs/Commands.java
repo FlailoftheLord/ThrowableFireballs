@@ -29,12 +29,12 @@ import me.flail.throwablefireballs.handlers.FireballThrow;
 import me.flail.throwablefireballs.tools.Tools;
 
 public class Commands extends Tools {
-	private Command command;
-	private String label;
-	private CommandSender sender;
-	private String[] args;
+	private final Command command;
+	private final String label;
+	private final CommandSender sender;
+	private final String[] args;
 
-	private FileConfiguration config = plugin.conf;
+	private final FileConfiguration config = plugin.conf;
 
 	public Commands(CommandSender sender, Command command, String label, String[] args) {
 		this.sender = sender;
@@ -47,9 +47,8 @@ public class Commands extends Tools {
 		if (command.getName().equals("icanhasfireball")) {
 			if (sender.hasPermission("lol.fireball.lol") || sender.isOp()) {
 				sender.sendMessage(chat("%prefix% &6&o&lYass bb! &4&l<3"));
-				if (sender instanceof Player) {
-					Player player = (Player) sender;
-					player.getInventory().addItem(new FireballItem().fireball());
+				if (sender instanceof Player player) {
+                    player.getInventory().addItem(new FireballItem().fireball());
 				}
 			} else if (!sender.isOp() && !(sender.hasPermission("lol.fireball.lol"))) {
 				sender.sendMessage(chat("%prefix% &elol, don't you wish!"));
@@ -70,7 +69,7 @@ public class Commands extends Tools {
 			for (String arg : arguments) {
 				helpLines.add(chat("&8-> &7/" + label + " " + arg));
 			}
-			String arg = label;
+			String arg;
 
 			if (args.length > 0) {
 				arg = args[0].toLowerCase();
@@ -96,9 +95,8 @@ public class Commands extends Tools {
 			}
 
 			if (args.length == 0) {
-				if (label.equalsIgnoreCase("fireball") && (sender instanceof Player)) {
-					Player player = (Player) sender;
-					if (player.hasPermission("fireballs.commandthrow")) {
+				if (label.equalsIgnoreCase("fireball") && (sender instanceof Player player)) {
+                    if (player.hasPermission("fireballs.commandthrow")) {
 						new FireballThrow().throwBall(player);
 					}
 				}
@@ -112,7 +110,7 @@ public class Commands extends Tools {
 
 			} else if (args.length == 1) {
 				arg = args[0].toLowerCase();
-				switch (args[0].toLowerCase()) {
+				switch (arg) {
 
 					case "help":
 						for (String line : helpLines) {
@@ -127,9 +125,8 @@ public class Commands extends Tools {
 						}
 						break;
 					case "get":
-						if (sender.hasPermission("fireballs.op") && (sender instanceof Player)) {
-							Player player = (Player) sender;
-							player.getInventory().addItem(new FireballItem().fireball());
+						if (sender.hasPermission("fireballs.op") && (sender instanceof Player player)) {
+                            player.getInventory().addItem(new FireballItem().fireball());
 							sender.sendMessage(chat("%prefix% &ayou got a fireball."));
 							break;
 						}
@@ -145,9 +142,8 @@ public class Commands extends Tools {
 				switch (arg) {
 					case "get":
 						int amount = Integer.parseInt(args[1].replaceAll("[^0-9]", ""));
-						if (sender.hasPermission("fireballs.op") && (sender instanceof Player)) {
-							Player player = (Player) sender;
-							givePlayerFireball(player, amount);
+						if (sender.hasPermission("fireballs.op") && (sender instanceof Player player)) {
+                            givePlayerFireball(player, amount);
 							break;
 						}
 						sender.sendMessage(noPermission);
@@ -190,13 +186,13 @@ public class Commands extends Tools {
 						sender.sendMessage(chat("%prefix% &cThat player is not online!"));
                     else {
 						String value = args[2].replaceAll("[^0-9]", "");
-						if (value != args[2]) {
-							sender.sendMessage(chat("%prefix% &cInvalid integer!"));
+						if (!value.equals(args[2])) {
+							sender.sendMessage(chat("%prefix% &cInvalid number!"));
 							return sender != null;
 						}
 						int intval = Integer.parseInt(value);
 						givePlayerFireball(found, intval);
-						sender.sendMessage(chat("%prefix% &aYou gave " + intval + " fireballs to " + args[1]));
+						sender.sendMessage(chat("%prefix% &aYou gave " + intval + " fireballs to " + found.getName()));
 					}
 				}
 			}
