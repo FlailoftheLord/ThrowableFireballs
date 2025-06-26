@@ -3,25 +3,21 @@ plugins {
 }
 
 group = 'net.flailofthelord'
-version = '1.9.5'
+version = '1.9.6'
 
 repositories {
     mavenCentral()
     maven {
-        name = "papermc-repo"
-        url = "https://repo.papermc.io/repository/maven-public/"
+        name = 'papermc'
+        url = 'https://repo.papermc.io/repository/maven-public/'
     }
-    maven {
-        name = "sonatype"
-        url = "https://oss.sonatype.org/content/groups/public/"
-    }
-    maven { url "https://maven.enginehub.org/repo/"}
+    maven { url="https://maven.enginehub.org/repo/"}
 }
 
 dependencies {
-    compileOnly("io.papermc.paper:paper-api:1.21-R0.1-SNAPSHOT")
-    compileOnly('com.sk89q.worldguard:worldguard-bukkit:7.0.10')
-    compileOnly('com.sk89q.worldedit:worldedit-bukkit:7.3.5')
+    compileOnly 'io.papermc.paper:paper-api:1.21.6-R0.1-SNAPSHOT'
+    compileOnly 'com.sk89q.worldguard:worldguard-bukkit:7.0.14'
+    compileOnly 'com.sk89q.worldedit:worldedit-bukkit:7.3.14'
 }
 
 def targetJavaVersion = 21
@@ -45,7 +41,7 @@ tasks.withType(JavaCompile).configureEach {
 processResources {
     def props = [version: version]
     inputs.properties props
-    filteringCharset 'UTF-8'
+    filteringCharset='UTF-8'
     filesMatching('plugin.yml') {
         expand props
     }

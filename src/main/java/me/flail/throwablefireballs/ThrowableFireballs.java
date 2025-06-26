@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2018 FlailoftheLord
+ * Copyright (C) 2025 FlailoftheLord
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -14,11 +14,16 @@
 
 package me.flail.throwablefireballs;
 
+import com.sk89q.worldguard.WorldGuard;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
+import me.flail.throwablefireballs.config.Config;
+import me.flail.throwablefireballs.handlers.*;
+import me.flail.throwablefireballs.handlers.elytra.PlayerHitListener;
+import me.flail.throwablefireballs.tools.TabCompleter;
+import me.flail.throwablefireballs.tools.Tools;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.NamespacedKey;
@@ -32,204 +37,177 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.Recipe;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitScheduler;
 
-import com.sk89q.worldguard.WorldGuard;
-
-import me.flail.throwablefireballs.config.Config;
-import me.flail.throwablefireballs.handlers.FireballCraft;
-import me.flail.throwablefireballs.handlers.FireballDamage;
-import me.flail.throwablefireballs.handlers.FireballExplosion;
-import me.flail.throwablefireballs.handlers.FireballItem;
-import me.flail.throwablefireballs.handlers.FireballRecipe;
-import me.flail.throwablefireballs.handlers.FireballThrow;
-import me.flail.throwablefireballs.handlers.WorldGuardHandle;
-import me.flail.throwablefireballs.handlers.elytra.PlayerHitListener;
-import me.flail.throwablefireballs.tools.TabCompleter;
-import me.flail.throwablefireballs.tools.Tools;
-
 public class ThrowableFireballs extends JavaPlugin implements Listener {
 
-	public NamespacedKey namespace = new NamespacedKey(this, "throwable_fireballs");
+    public NamespacedKey namespace = new NamespacedKey(this, "throwable_fireballs");
 
-	public ConsoleCommandSender console;
-	public boolean isWorldGuard;
-	public WorldGuardHandle worldguard;
-	public FileConfiguration conf;
-	public Config configDB;
-	Tools tools;
+    public ConsoleCommandSender console;
+    public boolean isWorldGuard;
+    public WorldGuardHandle worldguard;
+    public FileConfiguration conf;
+    public Config configDB;
+    Tools tools;
 
-	public final List<String> immuneBlocks = new ArrayList<>();
-	public final List<String> immuneBlockKeys = new ArrayList<>();
-	public Set<GameMode> disabledGamemodes = new HashSet<>();
+    public final List<String> immuneBlocks = new ArrayList<>();
+    public final List<String> immuneBlockKeys = new ArrayList<>();
+    public Set<GameMode> disabledGamemodes = new HashSet<>();
 
-	public Server server;
-	public BukkitScheduler scheduler;
-	public PluginManager m;
+    public Server server;
+    public BukkitScheduler scheduler;
+    public PluginManager m;
 
-	String WORLD_GUARD = "WorldGuard";
-	public WorldGuard wg = null;
-	int wgregisterattempts = 0;
+    String WORLD_GUARD = "WorldGuard";
+    public WorldGuard wg = null;
+    int wgregisterattempts = 0;
 
-	@Override
-	public void onLoad() {
-		tools = new Tools();
+    @Override
+    public void onLoad() {
+        tools = new Tools();
 
-		server = getServer();
-		scheduler = server.getScheduler();
-		console = server.getConsoleSender();
-		m = server.getPluginManager();
+        server = getServer();
+        scheduler = server.getScheduler();
+        console = server.getConsoleSender();
+        m = server.getPluginManager();
 
-		// Update config file
-		saveDefaultConfig();
+        // Update config file
+        saveDefaultConfig();
 
-		configDB = new Config();
-		configDB.setup();
+        configDB = new Config();
+        configDB.setup();
+    }
 
-	}
+    @Override
+    public void onEnable() {
+        this.doReload(null);
 
-	@Override
-	public void onEnable() {
+        registerRecipes();
 
-		this.doReload(null);
+        // Register Events and Commands
+        registerEvents();
 
-		registerRecipes();
+        registerCommands();
 
-		// Register Events and Commands
-		registerEvents();
+        // Friendly console spam ;)
+        String version = getDescription().getVersion();
+        tools.console(" ");
+        tools.console("&6ThrowableFireballs &7v" + version);
+        tools.console("&2  by FlailoftheLord");
+        tools.console("&6 NANI KORE~!?!?");
+        tools.console(" ");
 
-		registerCommands();
+        if (m.getPlugin(WORLD_GUARD) != null) { // m.getPlugin(WORLD_GUARD).isEnabled())
+            tools.console("&6WorldGuard found, registering region flags...");
 
-		// Friendly console spam ;)
-		String version = getDescription().getVersion();
-		tools.console(" ");
-		tools.console("&6ThrowableFireballs &7v" + version);
-		tools.console("&2  by FlailoftheLord");
-		tools.console("&6 NANI KORE~!?!?");
-		tools.console(" ");
+            initiateWorldGuard();
+        }
+    }
 
-		if (m.getPlugin(WORLD_GUARD) != null) {// m.getPlugin(WORLD_GUARD).isEnabled())
-			tools.console("&6WorldGuard found, registering region flags...");
+    @Override
+    public void onDisable() {
+        scheduler.cancelTasks(this);
+        tools.console("&6Farewell!");
+    }
 
-			initiateWorldGuard();
-		}
+    @EventHandler
+    public void onJoin(PlayerJoinEvent event) {
+        Player player = event.getPlayer();
+        NamespacedKey recipeKey = new FireballRecipe().getNamespace();
 
-	}
+        if (player.hasPermission("fireballs.craft")) {
+            if (!player.hasDiscoveredRecipe(recipeKey)) {
+                player.discoverRecipe(recipeKey);
+            }
+            return;
+        }
 
-	@Override
-	public void onDisable() {
+        player.undiscoverRecipe(recipeKey);
+    }
 
-		scheduler.cancelTasks(this);
-		tools.console("&6Farewell!");
-	}
+    @Override
+    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+        return new Commands(sender, command, label, args).run();
+    }
 
-	@EventHandler
-	public void onJoin(PlayerJoinEvent event) {
-		Player plyer = event.getPlayer();
-		if (plyer.hasPermission("fireballs.craft")) {
-			if (!plyer.hasDiscoveredRecipe(new FireballRecipe().getNamespace())) {
-				plyer.discoverRecipe(new FireballRecipe().getNamespace());
-			}
-			return;
-		}
+    @Override
+    public List<String> onTabComplete(CommandSender sender, Command command, String label, String[] args) {
+        return new TabCompleter(command).construct(args);
+    }
 
-		plyer.undiscoverRecipe(new FireballRecipe().getNamespace());
-	}
+    public void doReload(CommandSender op) {
+        this.conf = configDB.get();
 
-	@Override
-	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-		return new Commands(sender, command, label, args).run();
-	}
+        immuneBlocks.addAll(conf.getStringList("ImmuneBlocks"));
+        immuneBlockKeys.addAll(conf.getStringList("ImmuneBlockKeys"));
+        this.registerGamemodes();
 
-	@Override
-	public List<String> onTabComplete(CommandSender sender, Command command, String label, String[] args) {
-		return new TabCompleter(command).construct(args);
-	}
+        if (op != null) op.sendMessage(tools.chat(conf.getString("ReloadMessage")));
+    }
 
-	public void doReload(CommandSender op) {
-		this.conf = configDB.get();
+    void initiateWorldGuard() {
+        wg = WorldGuard.getInstance();
+        if (wg != null) {
+            worldguard = new WorldGuardHandle();
+            boolean loaded = worldguard.registerFlags();
+            if (!loaded) reInitWg();
+        } else reInitWg();
+    }
 
-		immuneBlocks.addAll(conf.getStringList("ImmuneBlocks"));
-		immuneBlockKeys.addAll(conf.getStringList("ImmuneBlockKeys"));
-		this.registerGamemodes();
+    void reInitWg() {
+        if (wgregisterattempts > 5) {
+            tools.console("&7WorldGuard flag registry failed.");
+            return;
+        }
+        wgregisterattempts += 1;
+        Bukkit.getScheduler()
+            .scheduleSyncDelayedTask(
+                this,
+                () -> {
+                    initiateWorldGuard();
+                },
+                100L
+            );
+    }
 
-		if (op != null)
-			op.sendMessage(tools.chat(conf.getString("ReloadMessage")));
-	}
+    private void registerCommands() {
+        for (String string : getDescription().getCommands().keySet()) {
+            this.getCommand(string).setExecutor(this);
+        }
+    }
 
-	void initiateWorldGuard() {
-		wg = WorldGuard.getInstance();
-		if (wg != null) {
+    private void registerEvents() {
+        PluginManager manager = server.getPluginManager();
+        manager.registerEvents(new FireballExplosion(), this);
+        manager.registerEvents(new FireballDamage(), this);
+        manager.registerEvents(new FireballThrow(), this);
+        manager.registerEvents(new PlayerHitListener(), this);
+        manager.registerEvents(new FireballCraft(), this);
+        manager.registerEvents(this, this);
+    }
 
-			worldguard = new WorldGuardHandle();
-			boolean loaded = worldguard.registerFlags();
-			if (!loaded)
-				reInitWg();
+    public void registerRecipes() {
+        FileConfiguration config = getConfig();
+        FireballRecipe recipes = new FireballRecipe();
+        int yield = config.getInt("AmountGiven");
 
-		} else
-			reInitWg();
+        ItemStack fb = new FireballItem().fireball();
+        fb.setAmount(yield);
 
-	}
+        // Clear existing recipes using modern approach
+        server.removeRecipe(recipes.getNamespace());
 
-	void reInitWg() {
-		if (wgregisterattempts > 5) {
-			tools.console("&7WorldGuard flag registry failed.");
-			return;
-		}
-		wgregisterattempts += 1;
-		Bukkit.getScheduler().scheduleSyncDelayedTask(this, () -> {
-			initiateWorldGuard();
-		}, 100L);
+        tools.console("&eFireball Recipe has been updated!");
 
-	}
+        // Add new recipe
+        server.addRecipe(recipes.fireballRecipe());
+    }
 
-	private void registerCommands() {
-		for (String string : getDescription().getCommands().keySet()) {
-			this.getCommand(string).setExecutor(this);
-		}
-	}
-
-	private void registerEvents() {
-		PluginManager manager = server.getPluginManager();
-		manager.registerEvents(new FireballExplosion(), this);
-		manager.registerEvents(new FireballDamage(), this);
-		manager.registerEvents(new FireballThrow(), this);
-		manager.registerEvents(new PlayerHitListener(), this);
-		manager.registerEvents(new FireballCraft(), this);
-		manager.registerEvents(this, this);
-
-	}
-
-	public void registerRecipes() {
-
-		FileConfiguration config = getConfig();
-
-		FireballRecipe recipes = new FireballRecipe();
-
-		int yield = config.getInt("AmountGiven");
-
-		ItemStack fb = new FireballItem().fireball();
-
-		fb.setAmount(yield);
-
-		List<Recipe> fbR = server.getRecipesFor(fb);
-
-		fbR.clear();
-		tools.console(("&eFireball Recipe has been updated!"));
-
-		server.addRecipe(recipes.fireballRecipe());
-
-	}
-
-	private void registerGamemodes() {
-		for (String s : new String[] { "Adventure", "Creative", "Spectator", "Survival" }) {
-			if (!conf.getBoolean("Gamemodes." + s, true))
-				this.disabledGamemodes.add(GameMode.valueOf(s.toUpperCase()));
-
-		}
-	}
-
+    private void registerGamemodes() {
+        for (String s : new String[] { "Adventure", "Creative", "Spectator", "Survival" }) {
+            if (!conf.getBoolean("Gamemodes." + s, true)) this.disabledGamemodes.add(GameMode.valueOf(s.toUpperCase()));
+        }
+    }
 }

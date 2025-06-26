@@ -1,22 +1,13 @@
-/*
- * Copyright (C) 2018 FlailoftheLord
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- * You should have received a copy of the GNU General Public License
- * along with this program. If not, see <https://www.gnu.org/licenses/>.
- */
-
 package me.flail.throwablefireballs.handlers;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 
+import me.flail.throwablefireballs.ThrowableFireballs;
+import me.flail.throwablefireballs.tools.Tools;
+import net.kyori.adventure.text.Component;
+import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -33,162 +24,127 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import me.flail.throwablefireballs.ThrowableFireballs;
-import me.flail.throwablefireballs.tools.Tools;
-
 public class FireballThrow extends Tools implements Listener {
 
-	private ThrowableFireballs plugin = JavaPlugin.getPlugin(ThrowableFireballs.class);
+    private final ThrowableFireballs plugin = JavaPlugin.getPlugin(ThrowableFireballs.class);
 
-	private FileConfiguration config;
+    private FileConfiguration config;
 
-	private Tools tools = new Tools();
+    private final Tools tools = new Tools();
 
-	private HashMap<String, Long> cooldown = new HashMap<>();
+    private final HashMap<String, Long> cooldown = new HashMap<>();
 
-	@EventHandler(priority = EventPriority.HIGHEST)
-	public void playerThrow(PlayerInteractEvent event) {
+    @EventHandler(priority = EventPriority.HIGHEST)
+    public void playerThrow(PlayerInteractEvent event) {
+        config = plugin.conf;
 
-		config = plugin.conf;
+        Player player = event.getPlayer();
+        Action a = event.getAction();
 
-		Player player = event.getPlayer();
-		Action a = event.getAction();
+        if ((a == Action.RIGHT_CLICK_BLOCK) || (a == Action.RIGHT_CLICK_AIR)) {
+            if (plugin.disabledGamemodes.contains(player.getGameMode())) return;
 
-		if ((a == Action.RIGHT_CLICK_BLOCK) || (a == Action.RIGHT_CLICK_AIR)) {
+            ItemStack fb = player.getInventory().getItemInMainHand();
+            ItemStack fbo = player.getInventory().getItemInOffHand();
+            ItemStack item = event.getItem();
 
-			if (plugin.disabledGamemodes.contains(player.getGameMode()))
-				return;
+            boolean allowFirecharge = config.getBoolean("UseFirecharge");
+            boolean fboEnabled = config.getBoolean("AllowOffhandThrowing");
 
-			ItemStack fb = player.getInventory().getItemInMainHand();
-			ItemStack fbo = player.getInventory().getItemInOffHand();
-			ItemStack item = event.getItem();
+            double cooldownTime = config.getDouble("Cooldown");
 
-			boolean allowFirecharge = config.getBoolean("UseFirecharge");
-			boolean fboEnabled = config.getBoolean("AllowOffhandThrowing");
+            if ((allowFirecharge && fb.getType().equals(Material.FIRE_CHARGE)) || ((allowFirecharge && fbo.getType().equals(Material.FIRE_CHARGE)) && fboEnabled) || this.isFireball(fb) || (this.isFireball(fbo) && fboEnabled)) {
+                boolean isInNoThrowWorld = false;
 
-			double cooldownTime = config.getDouble("Cooldown");
+                event.setCancelled(true);
 
-			if ((allowFirecharge && fb.getType().equals(Material.FIRE_CHARGE))
-					|| (allowFirecharge && fbo.getType().equals(Material.FIRE_CHARGE)) && fboEnabled || this.isFireball(fb)
-					|| (this.isFireball(fbo) && fboEnabled)) {
+                String pWorld = player.getWorld().getName().toLowerCase();
+                List<String> noThrowWorlds = config.getStringList("NoThrowZones");
 
-				boolean isInNoThrowWorld = false;
+                for (String world : noThrowWorlds) {
+                    if (world.equalsIgnoreCase(pWorld)) {
+                        isInNoThrowWorld = true;
+                        break;
+                    }
+                }
 
-				event.setCancelled(true);
+                if (isInNoThrowWorld) {
+                    String noThrowingMessage = config.getString("NoThrowZoneMessage");
 
-				String pWorld = player.getWorld().getName().toLowerCase();
-				List<String> noThrowWorlds = config.getStringList("NoThrowZones");
+                    player.sendMessage(tools.chat(noThrowingMessage));
+                } else {
+                    int consume = 1;
 
-				for (String world : noThrowWorlds) {
+                    if (player.hasPermission("fireballs.throw")) {
+                        Material onHandItem = fb.getType();
+                        Material offHandItem = fbo.getType();
 
-					if (world.equalsIgnoreCase(pWorld)) {
+                        if (cooldown.containsKey(player.getName()) && !player.hasPermission("fireballs.bypass")) {
+                            double timeLeft = Math.ceil((cooldown.get(player.getName()) / 1000D + cooldownTime) - (System.currentTimeMillis() / 1000D));
 
-						isInNoThrowWorld = true;
-						break;
+                            boolean sendCooldownMessage = config.getBoolean("CooldownMessageEnabled", false);
 
-					}
+                            String cooldownMessage = Objects.requireNonNull(config.getString("CooldownMessage")).replace("%cooldown%", timeLeft + "");
 
-				}
+                            if (timeLeft > 0) {
+                                if (sendCooldownMessage) {
+                                    player.sendMessage(tools.chat(cooldownMessage));
+                                    consume = 0;
+                                }
+                                return;
+                            }
+                        }
 
-				if (isInNoThrowWorld) {
+                        if (player.hasPermission("fireballs.infinite")) consume = 0;
 
-					String noThrowingMessage = config.getString("NoThrowZoneMessage");
+                        if (item != null && item.getAmount() < consume) return;
 
-					player.sendMessage(tools.chat(noThrowingMessage));
+                        if (!player.getGameMode().equals(GameMode.CREATIVE)) {
+                            if (item != null && item.getAmount() == consume)
+                                player.getInventory().removeItem(new ItemStack(item));
+                            else if (item != null) item.setAmount(item.getAmount() - consume);
+                        }
 
-				} else {
-					int consume = 1;
+                        cooldown.put(player.getName(), System.currentTimeMillis());
 
-					if (player.hasPermission("fireballs.throw")) {
+                        this.throwBall(player);
+                    } else player.sendMessage(tools.chat(config.getString("NoPermissionMessage", "%prefix% &cYou don't have permission!")));
+                }
+            }
+        }
+    }
 
-						Material onHandItem = fb.getType();
-						Material offHandItem = fbo.getType();
+    public void throwBall(Player player) {
+        Fireball fireball = player.launchProjectile(Fireball.class);
 
-						if (cooldown.containsKey(player.getName()) && !player.hasPermission("fireballs.bypass")) {
+        World world = fireball.getWorld();
 
-							double timeLeft = Math.ceil((cooldown.get(player.getName()) / 1000D + cooldownTime)
-									- (System.currentTimeMillis() / 1000D));
+        config = plugin.conf;
 
-							boolean sendCooldownMessage = config.getBoolean("CooldownMessageEnabled", false);
+        boolean doesNaturalDamage = config.getBoolean("NaturalExplosion", true);
 
-							String cooldownMessage = config.getString("CooldownMessage").replace("%cooldown%",
-									timeLeft + "");
+        fireball.setIsIncendiary(doesNaturalDamage);
+        if (!doesNaturalDamage) {
+            fireball.setYield(0F);
+        }
+        fireball.customName(Component.empty().content("HolyBalls"));
+        fireball.setMetadata("HolyBalls", new FixedMetadataValue(plugin, "fireball"));
+        fireball.setCustomNameVisible(false);
 
-							if (timeLeft > 0) {
-								if (((onHandItem != null))
-										|| ((offHandItem == null))) {
-									if (sendCooldownMessage) {
-										player.sendMessage(tools.chat(cooldownMessage));
-										consume = 0;
-									}
+        String itemType = config.getString("FireballItem", "FIRE_CHARGE");
+        if (!itemType.equalsIgnoreCase("fire_charge")) {
+            ArmorStand aStand = (ArmorStand) fireball.getWorld().spawnEntity(fireball.getLocation(), EntityType.ARMOR_STAND);
 
-								}
-								return;
-							}
+            aStand.setGravity(false);
+            aStand.setBasePlate(false);
+            aStand.setInvulnerable(true);
+            aStand.setVisible(false);
+            aStand.getEquipment().setHelmet(new ItemStack(Objects.requireNonNull(Material.matchMaterial(itemType))));
 
-						}
+            aStand.setRemoveWhenFarAway(true);
 
-						if (player.hasPermission("fireballs.infinite"))
-							consume = 0;
+            fireball.addPassenger(aStand);
+        }
 
-						if (item != null && item.getAmount() < consume)
-							return;
-
-						if (item != null && item.getAmount() == consume)
-							player.getInventory().removeItem(new ItemStack(item));
-						else if (item != null)
-							item.setAmount(item.getAmount() - consume);
-
-						cooldown.put(player.getName(), System.currentTimeMillis());
-
-						this.throwBall(player);
-
-					} else
-						player.sendMessage(tools.chat(
-								config.getString("NoPermissionMessage", "%prefix% &cYou don't have permission!")));
-
-				}
-
-			}
-
-		}
-
-	}
-
-	public Fireball throwBall(Player player) {
-		Fireball fireball = player.launchProjectile(Fireball.class);
-
-		World world = fireball.getWorld();
-
-		config = plugin.conf;
-
-		boolean doesNaturalDamage = config.getBoolean("NaturalExplosion", true);
-
-
-		fireball.setIsIncendiary(doesNaturalDamage);
-		if (!doesNaturalDamage) {
-			fireball.setYield(0F);
-		}
-		fireball.setCustomName("HolyBalls");
-		fireball.setMetadata("HolyBalls", new FixedMetadataValue(plugin, "fireball"));
-		fireball.setCustomNameVisible(false);
-
-		String itemType = config.getString("FireballItem", "FIRE_CHARGE");
-		if (!itemType.equalsIgnoreCase("fire_charge")) {
-			ArmorStand aStand = (ArmorStand) fireball.getWorld().spawnEntity(fireball.getLocation(), EntityType.ARMOR_STAND);
-
-			aStand.setGravity(false);
-			aStand.setBasePlate(false);
-			aStand.setInvulnerable(true);
-			aStand.setVisible(false);
-			aStand.getEquipment().setHelmet(new ItemStack(Material.matchMaterial(itemType)));
-
-			aStand.setRemoveWhenFarAway(true);
-
-			fireball.addPassenger(aStand);
-		}
-
-		return fireball;
-	}
-
+    }
 }

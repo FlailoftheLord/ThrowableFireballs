@@ -1,13 +1,12 @@
 package me.flail.throwablefireballs.handlers;
 
+import me.flail.throwablefireballs.tools.Tools;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event.Result;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.CraftItemEvent;
-
-import me.flail.throwablefireballs.tools.Tools;
 
 public class FireballCraft extends Tools implements Listener {
 

@@ -8,4 +8,6 @@
 gradle.properties
 gradlew
 gradlew.bat
+/bin
+/.settings
 

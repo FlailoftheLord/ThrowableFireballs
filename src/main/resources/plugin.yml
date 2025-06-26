@@ -1,6 +1,6 @@
 name: ThrowableFireballs
 main: me.flail.throwablefireballs.ThrowableFireballs
-version: 1.9.5
+version: 1.9.6
 author: FlailoftheLord
 description: Throw Fireballs, like a Ghast!
 api-version: 1.21
