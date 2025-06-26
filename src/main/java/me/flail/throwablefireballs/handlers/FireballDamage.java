@@ -9,9 +9,11 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 
+import java.util.Objects;
+
 public class FireballDamage implements Listener {
 
-    private ThrowableFireballs plugin = ThrowableFireballs.getPlugin(ThrowableFireballs.class);
+    private final ThrowableFireballs plugin = ThrowableFireballs.getPlugin(ThrowableFireballs.class);
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onFireballDamage(EntityDamageByEntityEvent e) {
@@ -25,7 +27,7 @@ public class FireballDamage implements Listener {
 
         if (!doesNaturalDamage) {
             if (cause.equals(DamageCause.BLOCK_EXPLOSION) || cause.equals(DamageCause.ENTITY_EXPLOSION) || cause.equals(DamageCause.PROJECTILE)) {
-                String fbName = damager.getCustomName();
+                String fbName = Objects.requireNonNull(damager.customName()).toString();
 
                 if (((fbName != null) && fbName.equals("HolyBalls")) || damager.hasMetadata("HolyBalls")) {
                     if (plugin.isWorldGuard && !plugin.worldguard.canDamageEntity(damaged.getLocation())) {

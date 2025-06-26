@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Objects;
 import me.flail.throwablefireballs.ThrowableFireballs;
 import me.flail.throwablefireballs.tools.Tools;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.block.Block;
@@ -34,7 +35,7 @@ public class FireballExplosion extends Tools implements Listener {
 
         Entity entity = event.getEntity();
 
-        if (entity instanceof Fireball) {
+        if (entity instanceof Fireball fireball) {
             plugin = JavaPlugin.getPlugin(ThrowableFireballs.class);
             FileConfiguration config = plugin.conf;
 
@@ -43,8 +44,6 @@ public class FireballExplosion extends Tools implements Listener {
             if (!doesNaturalDamage) {
                 int power = config.getInt("FireballExplosionPower", 0);
                 boolean doesFire = config.getBoolean("FireballSetFire");
-
-                Fireball fireball = (Fireball) entity;
 
                 if (!fireball.hasMetadata(fbMetadata)) {
                     return;
@@ -75,7 +74,7 @@ public class FireballExplosion extends Tools implements Listener {
                         Item droppedItem = fbWorld.dropItemNaturally(fbLoc, item);
 
                         droppedItem.setPickupDelay(Integer.MAX_VALUE);
-                        droppedItem.setCustomName(new Tools().chat(config.getString("FireballName", "&6Fireball")));
+                        droppedItem.customName(Component.empty().content(new Tools().chat(config.getString("FireballName", "&6Fireball"))));
                         droppedItem.customName();
                         droppedItem.setCustomNameVisible(true);
 
@@ -89,8 +88,9 @@ public class FireballExplosion extends Tools implements Listener {
     @EventHandler
     public void blockBoom(EntityExplodeEvent event) {
         Entity e = event.getEntity();
+        String custom_name = Objects.requireNonNull(e.customName()).toString();
 
-        if (e.hasMetadata(fbMetadata) || ((e.getCustomName() != null) && e.getCustomName().equals(fbMetadata)) || e.hasMetadata("Fireballed")) {
+        if (e.hasMetadata(fbMetadata) || (custom_name.equals(fbMetadata)) || e.hasMetadata("Fireballed")) {
             List<String> immuneBlocks = new ArrayList<>(plugin.immuneBlocks);
             List<String> immuneKeys = new ArrayList<>(plugin.immuneBlockKeys);
             for (String s : immuneBlocks.toArray(new String[] {})) {

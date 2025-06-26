@@ -13,11 +13,11 @@ import org.bukkit.inventory.ShapedRecipe;
 
 public class FireballRecipe {
 
-    private ThrowableFireballs plugin = ThrowableFireballs.getPlugin(ThrowableFireballs.class);
+    private final ThrowableFireballs plugin = ThrowableFireballs.getPlugin(ThrowableFireballs.class);
 
-    private ConsoleCommandSender console = Bukkit.getConsoleSender();
+    private final ConsoleCommandSender console = Bukkit.getConsoleSender();
 
-    private Tools tools = new Tools();
+    private final Tools tools = new Tools();
 
     public NamespacedKey getNamespace() {
         return new NamespacedKey(plugin, "ThrowableFireball");
@@ -50,6 +50,9 @@ public class FireballRecipe {
 
         ShapedRecipe fbRecipe = new ShapedRecipe(getNamespace(), fireball);
 
+        assert line1 != null;
+        assert line2 != null;
+        assert line3 != null;
         fbRecipe.shape(line1, line2, line3);
 
         if (allLines.contains("A")) {

@@ -9,7 +9,6 @@ import me.flail.throwablefireballs.tools.Tools;
 import net.kyori.adventure.text.Component;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
-import org.bukkit.World;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.EntityType;
@@ -76,8 +75,6 @@ public class FireballThrow extends Tools implements Listener {
                     int consume = 1;
 
                     if (player.hasPermission("fireballs.throw")) {
-                        Material onHandItem = fb.getType();
-                        Material offHandItem = fbo.getType();
 
                         if (cooldown.containsKey(player.getName()) && !player.hasPermission("fireballs.bypass")) {
                             double timeLeft = Math.ceil((cooldown.get(player.getName()) / 1000D + cooldownTime) - (System.currentTimeMillis() / 1000D));
@@ -89,7 +86,6 @@ public class FireballThrow extends Tools implements Listener {
                             if (timeLeft > 0) {
                                 if (sendCooldownMessage) {
                                     player.sendMessage(tools.chat(cooldownMessage));
-                                    consume = 0;
                                 }
                                 return;
                             }
@@ -116,8 +112,6 @@ public class FireballThrow extends Tools implements Listener {
 
     public void throwBall(Player player) {
         Fireball fireball = player.launchProjectile(Fireball.class);
-
-        World world = fireball.getWorld();
 
         config = plugin.conf;
 

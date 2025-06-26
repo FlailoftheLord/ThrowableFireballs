@@ -41,7 +41,7 @@ public class Tools {
     public String translateHex(String startTag, String endTag, String message) {
         final Pattern hexPattern = Pattern.compile(startTag + "([A-Fa-f0-9]{6})" + endTag);
         Matcher matcher = hexPattern.matcher(message);
-        StringBuffer buffer = new StringBuffer(message.length() + (4 * 8));
+        StringBuilder buffer = new StringBuilder(message.length() + (4 * 8));
         while (matcher.find()) {
             String group = matcher.group(1);
             matcher.appendReplacement(buffer, COLOR_CHAR + "x" + COLOR_CHAR + group.charAt(0) + COLOR_CHAR + group.charAt(1) + COLOR_CHAR + group.charAt(2) + COLOR_CHAR + group.charAt(3) + COLOR_CHAR + group.charAt(4) + COLOR_CHAR + group.charAt(5));
@@ -57,21 +57,18 @@ public class Tools {
      * Knocks all entities within the target radius backwards as naturally as
      * possible.
      *
-     * @param center
-     *                   the target entity at the center of the fireball hit.
-     * @param radius
-     *                   at which to check for entities.
-     * @return false if there are no entities nearby, true otherwise.
+     * @param center the target entity at the center of the fireball hit.
+     * @param radius at which to check for entities.
      */
-    public boolean setKnockback(Entity center, double radius) {
+    public void setKnockback(Entity center, double radius) {
         Location target = center.getLocation();
 
         int maxHeight = plugin.conf.getInt("MaxJumpHeight");
 
         List<Entity> nearbyEntities = center.getNearbyEntities(radius, radius, radius);
 
-        if ((nearbyEntities == null) || nearbyEntities.isEmpty()) {
-            return false;
+        if (nearbyEntities.isEmpty()) {
+            return;
         }
 
         List<LivingEntity> validEntities = new ArrayList<>();
@@ -83,8 +80,7 @@ public class Tools {
         }
 
         for (LivingEntity entity : validEntities) {
-            if ((entity instanceof Player)) {
-                Player player = (Player) entity;
+            if ((entity instanceof Player player)) {
                 if (player.isConversing() || player.isGliding()) {
                     continue;
                 }
@@ -106,7 +102,6 @@ public class Tools {
             entity.setVelocity(variantVel);
         }
 
-        return true;
     }
 
     protected String removeChars(String message, String[] chars) {
